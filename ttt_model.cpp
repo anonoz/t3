@@ -1,14 +1,23 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+
+// TTT files
+#include "ttt_helpers.hpp"
+
 class TTTModel
 {
 	private:
-		vector< vector<char> > main_board;
+		std::vector< std::vector<char> > main_board;
 
 	public:
-		TTTModel(){ init(); }
+		TTTModel();
 		bool checkWin();
 };
 
-void init()
+TTTModel::TTTModel()
 {
 	// Wipe the game clean
 	for (int i = 0; i < 9; i++)
@@ -20,8 +29,8 @@ void init()
 	}
 }
 
-bool checkWin()
+bool TTTModel::checkWin()
 {
 	// Check each board
-	for 
+	return true;
 }

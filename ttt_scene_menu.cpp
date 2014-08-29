@@ -25,6 +25,7 @@ class SceneMenu
 
 SceneMenu::SceneMenu(sf::RenderWindow& xwindow, std::vector<sf::Font*>& xttt_fonts)
 {
+	std::cout << "Constructing scene_menu" << std::endl;
 	window = &xwindow;
 	ttt_fonts = xttt_fonts;
 
@@ -45,6 +46,8 @@ SceneMenu::SceneMenu(sf::RenderWindow& xwindow, std::vector<sf::Font*>& xttt_fon
 	start_button.setCharacterSize(50);
 	start_button.setPosition(414, 518);
 	TTTHelpers::set_text_string(start_button, "START");
+
+	std::cout << "Constructed scene_menu" << std::endl;
 }
 
 // INSIDE LOOP

@@ -1,1 +1,1 @@
-g++ ttt_helpers.cpp ttt_scene_director.cpp ttt_scene_menu.cpp main.cpp -I"c:\SFML-2.1\include" -L"c:\SFML-2.1\lib" -lsfml-system -lsfml-window -lopengl32 -lglu32 -lsfml-graphics -lsfml-main -lsfml-audio -lsfml-network && a
+g++ ttt_helpers.cpp ttt_scene_director.cpp ttt_scene_menu.cpp main.cpp -I"c:\SFML-2.1\include" -L"c:\SFML-2.1\lib" -lsfml-system-d -lsfml-window-d -lopengl32 -lglu32 -lsfml-graphics-d -lsfml-main-d -lsfml-audio-d -lsfml-network-d && a

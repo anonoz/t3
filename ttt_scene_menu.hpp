@@ -1,3 +1,6 @@
+#ifndef SCENE_MENU_HPP
+#define SCENE_MENU_HPP
+
 class SceneMenu
 {
 	public:
@@ -5,3 +8,5 @@ class SceneMenu
 		void render();
 		void handle(sf::Event& event);
 };
+
+#endif

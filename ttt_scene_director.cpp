@@ -8,24 +8,7 @@
 #include "ttt_helpers.hpp"
 #include "ttt_scene_menu.hpp"
 
-class SceneDirector
-{
-	private:
-		int current_scene;
-		sf::RenderWindow* window;
-		std::vector< sf::Font* > ttt_fonts;
-
-		SceneMenu* scene_menu;
-		// SceneBattlefield 	scene_battlefield;
-		// SceneAbout			scene_about;
-
-	public:
-		SceneDirector(sf::RenderWindow& xwindow);
-		int getCurrentScene();
-		void handle(sf::Event& event);
-		void render();
-
-};
+#include "ttt_scene_director.hpp"
 
 SceneDirector::SceneDirector(sf::RenderWindow& xwindow)
 {
@@ -41,12 +24,23 @@ SceneDirector::SceneDirector(sf::RenderWindow& xwindow)
 	scene_menu = &scene_menu_object;
 
 	// Set graphics state
-	current_scene = 0;
+	setCurrentScene(0);
+
+	std::cout << "Finished constructing director!" << std::endl;
 }
 
 int SceneDirector::getCurrentScene()
 {
 	return current_scene;
+}
+
+void SceneDirector::setCurrentScene(int target_current_scene)
+{
+	if (target_current_scene < 0 || target_current_scene > 4)
+		return;
+
+	current_scene = target_current_scene;
+	return;
 }
 
 // INSIDE LOOP
@@ -65,7 +59,6 @@ void SceneDirector::render()
 	switch (current_scene)
 	{
 		case 0:
-			std::cout << "HO" << std::endl;
 			scene_menu->render();
 			break;
 	}

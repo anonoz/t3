@@ -1,5 +1,5 @@
-#ifndef SCENE_DIRECTOR_H
-#define SCENE_DIRECTOR_H
+#ifndef SCENE_DIRECTOR_HPP
+#define SCENE_DIRECTOR_HPP
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -14,12 +14,14 @@ class SceneDirector
 	private:
 		int current_scene;
 		sf::RenderWindow* window;
+		std::vector< sf::Font* > ttt_fonts;
 
-		SceneMenu		scene_menu;
+		SceneMenu*		scene_menu;
 
 	public:
 		SceneDirector(sf::RenderWindow& xwindow);
 		int getCurrentScene();
+		void setCurrentScene(int target_current_scene);
 		void handle(sf::Event& event);
 		void render();
 

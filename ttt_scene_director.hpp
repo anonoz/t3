@@ -19,7 +19,7 @@ class SceneDirector
 		SceneMenu*		scene_menu;
 
 	public:
-		SceneDirector(sf::RenderWindow& xwindow);
+		SceneDirector(sf::RenderWindow* xwindow);
 		int getCurrentScene();
 		void setCurrentScene(int target_current_scene);
 		void handle(sf::Event& event);

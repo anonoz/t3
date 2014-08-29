@@ -6,27 +6,12 @@
 
 // TTT files
 #include "ttt_helpers.hpp"
+#include "ttt_scene_menu.hpp"
 
-class SceneMenu
-{
-	private:
-		sf::RenderWindow* window;
-		std::vector< sf::Font* > ttt_fonts;
-		sf::Font kenvector_future_thin, kenpixel_blocks;
-
-		// Visual Elements
-		sf::Text heading1, start_button, about_button;
-
-	public:
-		SceneMenu(sf::RenderWindow& xwindow, std::vector<sf::Font*>& xttt_fonts);
-		void render();
-		void handle(sf::Event& event);
-};
-
-SceneMenu::SceneMenu(sf::RenderWindow& xwindow, std::vector<sf::Font*>& xttt_fonts)
+SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts)
 {
 	std::cout << "Constructing scene_menu" << std::endl;
-	window = &xwindow;
+	window = xwindow;
 	ttt_fonts = xttt_fonts;
 
 	kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
@@ -54,10 +39,10 @@ SceneMenu::SceneMenu(sf::RenderWindow& xwindow, std::vector<sf::Font*>& xttt_fon
 void SceneMenu::render()
 {
 	std::cout<<"DRAW"<<std::endl;
-	// window->draw(heading1); 
+	// window->draw(heading1);
 
 	// Draw start
-	// window->draw(start_button);
+	window->draw(start_button);
 
 	// Draw about
 

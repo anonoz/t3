@@ -10,18 +10,17 @@
 
 #include "ttt_scene_director.hpp"
 
-SceneDirector::SceneDirector(sf::RenderWindow& xwindow)
+SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 {
-	window = &xwindow;
+	window = xwindow;
 
 	// Load fonts
 	sf::Font kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
 		ttt_fonts.push_back(&kenvector_future_thin);
 
 	// Initiate scenes
-	SceneMenu scene_menu_object(*window, ttt_fonts);
+	scene_menu = new SceneMenu(window, &ttt_fonts);
 	std::cout << "Scene menu created in director... "<< std::endl;
-	scene_menu = &scene_menu_object;
 
 	// Set graphics state
 	setCurrentScene(0);

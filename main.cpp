@@ -18,10 +18,10 @@ using namespace std;
 int main()
 {
 	// Mockup is 800x600, tutorial says 800x600, therefore 800x600
-	sf::RenderWindow window(sf::VideoMode(800, 600), "TAC TIC TOE!", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(800, 600), "TAC TIC TOE!", sf::Style::Titlebar | sf::Style::Close);
 
 	// CPU usage fix
-	window.setFramerateLimit(60);
+	window->setFramerateLimit(60);
 
 	// Initiate scene director (graphics dpt)
 	cout << "Invoking scene director... " << endl;
@@ -30,15 +30,15 @@ int main()
 
 	// Here goes the actual loop
 	cout << "Starting main loop... " << endl;
-	while (window.isOpen())
+	while (window->isOpen())
 	{
 		// The obligatory event handler
 		sf::Event event;
-		while (window.pollEvent(event))
+		while (window->pollEvent(event))
 		{
 			// KILL!
 			if (event.type == sf::Event::Closed)
-				window.close();
+				window->close();
 
 			// Let scene director delegate event handling to other scenes
 			if (director.getCurrentScene() >= 0 and director.getCurrentScene() <= 4)
@@ -48,12 +48,12 @@ int main()
 			}
 			else
 			{
-				window.close();
+				window->close();
 			}
 		}
 
 		// Wipe it as clear as how Mr Yoong does it
-		window.clear(sf::Color::Black);
+		window->clear(sf::Color::White);
 
 		// Let director render
 		cout << "Calling render... " << endl;
@@ -61,7 +61,7 @@ int main()
 		cout << "Rendering done! " << endl;
 
 		// Finalise loop
-		window.display();
+		window->display();
 	}
 
 	return 0;

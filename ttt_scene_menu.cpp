@@ -32,6 +32,9 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	start_button.setPosition(405, 425);
 	TTTHelpers::set_text_string(start_button, "START", "CT");
 
+	// Watch start button
+
+
 	// Prepare the mini board
 	// sf::Texture* mini_board = TTTHelpers::load_texture("assets/images/mini-board.png");
 	sf::Texture* mini_board_texture = TTTHelpers::load_texture("assets/images/mini-board.png");
@@ -66,8 +69,34 @@ void SceneMenu::render()
 	window->draw(mini_board);
 }
 
-void SceneMenu::handle(sf::Event& event)
+int SceneMenu::handle(sf::Event* xevent)
 {
-	// On menu we need to know when user clicks on the buttons
+	int new_scene = 0; // by default dont change new scene, thereby 0
+	event = xevent;
 
+	std::cout << "Scene Menu is handling event now " << xevent->type << std::endl;
+
+	// On menu we need to know when user clicks on the buttons
+	switch (xevent->type)
+	{
+		case sf::Event::MouseButtonReleased:
+		{
+			new_scene = handle_mouse_click(event->mouseButton.x, event->mouseButton.y);
+			std::cout << "Mouse pressed detected at " << event->mouseButton.x << ", " << event->mouseButton.y << std::endl;
+			break;
+		}
+	}
+
+	return new_scene;
 }
+
+int SceneMenu::handle_mouse_click(int click_x, int click_y)
+{
+	// Start button check
+	if (start_button.getGlobalBounds().contains(click_x, click_y))
+		std::cout << "OMG START BUTTON IS CLICKED!!!" << std::endl;
+
+	return 0;
+}
+
+// Scene changing

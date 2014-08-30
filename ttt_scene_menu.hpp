@@ -5,6 +5,7 @@ class SceneMenu
 {
 	private:
 		sf::RenderWindow* window;
+		sf::Event* event;
 		std::vector< sf::Font* >* ttt_fonts;
 		sf::Font kenvector_future_thin, kenpixel_blocks;
 
@@ -15,7 +16,8 @@ class SceneMenu
 	public:
 		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
 		void render();
-		void handle(sf::Event& event);
+		int handle(sf::Event* xevent);
+		int handle_mouse_click(int click_X, int click_y);
 };
 
 #endif

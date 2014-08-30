@@ -49,12 +49,12 @@ void SceneDirector::setCurrentScene(int target_current_scene)
 }
 
 // INSIDE LOOP
-void SceneDirector::handle(sf::Event& event)
+void SceneDirector::handle(sf::Event* xevent)
 {
 	switch (current_scene)
 	{
 		case 0:
-			scene_menu->handle(event);
+			setCurrentScene(scene_menu->handle(xevent));
 			break;
 	}
 }

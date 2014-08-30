@@ -14,6 +14,7 @@ class SceneDirector
 	private:
 		int current_scene;
 		sf::RenderWindow* window;
+		sf::Event* event;
 		std::vector< sf::Font* > ttt_fonts;
 
 		SceneMenu*		scene_menu;
@@ -22,7 +23,7 @@ class SceneDirector
 		SceneDirector(sf::RenderWindow* xwindow);
 		int getCurrentScene();
 		void setCurrentScene(int target_current_scene);
-		void handle(sf::Event& event);
+		void handle(sf::Event* xevent);
 		void render();
 
 };

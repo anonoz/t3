@@ -20,8 +20,9 @@ int main()
 	// Mockup is 800x600, tutorial says 800x600, therefore 800x600
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(800, 600), "TAC TIC TOE!", sf::Style::Titlebar | sf::Style::Close);
 
-	// CPU usage fix
+	// CPU usage fix and other lovely tweaks
 	window->setFramerateLimit(60);
+	window->setKeyRepeatEnabled(false);
 
 	// Initiate scene director (graphics dpt)
 	cout << "Invoking scene director... " << endl;
@@ -33,11 +34,11 @@ int main()
 	while (window->isOpen())
 	{
 		// The obligatory event handler
-		sf::Event event;
-		while (window->pollEvent(event))
+		sf::Event* event = new sf::Event();
+		while (window->pollEvent(*event))
 		{
 			// KILL!
-			if (event.type == sf::Event::Closed)
+			if (event->type == sf::Event::Closed)
 				window->close();
 
 			// Let scene director delegate event handling to other scenes
@@ -62,6 +63,12 @@ int main()
 
 		// Finalise loop
 		window->display();
+
+		// Clear event memory
+		delete event;
+
+		// Clear console for status reporting
+		// system("cls");
 	}
 
 	return 0;

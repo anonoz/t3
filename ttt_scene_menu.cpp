@@ -6,8 +6,8 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	window = xwindow;
 	ttt_fonts = xttt_fonts;
 
-	// kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
-	// kenpixel_blocks = TTTHelpers::load_font("assets/fonts/kenpixel_blocks.ttf");
+	// Calculating middle of the screen from RenderWindow size to fit ttt board
+	sf::Vector2f window_size_v2f(window->getSize());
 
 	// Prepare texts
 	heading1.setFont(*((*ttt_fonts)[2])); std::cout<<"set font"<<std::endl;
@@ -17,23 +17,18 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	heading1.setPosition(186, 78); std::cout<<"set position"<<std::endl;
 	TTTHelpers::set_text_string(heading1, "TAC TIC TOE"); std::cout<<"set string cfg"<<std::endl;
 
-	start_button.setFont(*((*ttt_fonts)[1]));
-	start_button.setColor(sf::Color::Black);
-	start_button.setStyle(sf::Text::Regular);
-	start_button.setCharacterSize(38);
-	start_button.setPosition(405, 425);
-	TTTHelpers::set_text_string(start_button, "START", "CT");
+	// Shiny new start button
+	sf::Texture* start_button_texture = TTTHelpers::load_texture("assets/images/start-button.png");
+	sf::Vector2u start_button_texture_size = start_button_texture->getSize();
 
-	// Watch start button
-
+	start_button.setTexture(start_button_texture);
+	start_button.setSize(sf::Vector2f(start_button_texture_size.x, start_button_texture_size.y));
+	start_button.setPosition((window_size_v2f.x / 2) - (start_button_texture_size.x / 2), (window_size_v2f.y / 2) - (start_button_texture_size.y / 2) + 140);
 
 	// Prepare the mini board
 	// sf::Texture* mini_board = TTTHelpers::load_texture("assets/images/mini-board.png");
 	sf::Texture* mini_board_texture = TTTHelpers::load_texture("assets/images/mini-board.png");
 	sf::Vector2u mini_board_texture_size = mini_board_texture->getSize();
-
-	// Calculating middle of the screen from RenderWindow size to fit ttt board
-	sf::Vector2f window_size_v2f(window->getSize());
 
 	mini_board.setTexture(mini_board_texture);
 	mini_board.setSize(sf::Vector2f(mini_board_texture_size.x, mini_board_texture_size.y));

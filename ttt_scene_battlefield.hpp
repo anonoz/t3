@@ -32,6 +32,7 @@ class SceneBattlefield
 
 		sf::Text x_winner_notice,
 			o_winner_notice,
+			tie_notice,
 			play_again;
 
 		sf::RectangleShape battle_board
@@ -44,6 +45,7 @@ class SceneBattlefield
 			, mouse_cursor
 			, x_winner_mat
 			, o_winner_mat
+			, tie_mat
 			, playagain_button;
 
 		sf::SoundBuffer* hover_grid_sound_buffer,

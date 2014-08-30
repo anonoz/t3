@@ -64,6 +64,7 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	// Create winner mat
 	sf::Texture* x_winner_mat_texture = TTTHelpers::load_texture("assets/images/x-winner-mat.png");
 	sf::Texture* o_winner_mat_texture = TTTHelpers::load_texture("assets/images/o-winner-mat.png");
+	sf::Texture* tie_mat_texture = TTTHelpers::load_texture("assets/images/tie-mat.png");
 
 	sf::Vector2u winner_mat_texture_size = x_winner_mat_texture->getSize();
 
@@ -75,6 +76,9 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_winner_mat = x_winner_mat;
 	o_winner_mat.setTexture(o_winner_mat_texture);
 
+	tie_mat = x_winner_mat;
+	tie_mat.setTexture(tie_mat_texture);
+
 	// Create winner mat textual notices
 	x_winner_notice.setFont(*((*ttt_fonts)[4]));
 	x_winner_notice.setColor(sf::Color::White);
@@ -85,6 +89,9 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 
 	o_winner_notice = x_winner_notice;
 	TTTHelpers::set_text_string(o_winner_notice, "PLAYER O WON", "CT");
+
+	tie_notice = x_winner_notice;
+	TTTHelpers::set_text_string(tie_notice, "TIE", "CT");	
 
 	// Create winner mat play again inactive and active buttons
 	sf::Texture* playagain_button_texture = TTTHelpers::load_texture("assets/images/playagain-button.png");
@@ -100,11 +107,13 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	placement_ok2_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_2.ogg");
 	placement_error_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_error.ogg");
 	winner_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_win.ogg");
+	tie_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_tie.ogg");
 
 	placement_ok1_sound.setBuffer(placement_ok1_sound_buffer);
 	placement_ok2_sound.setBuffer(placement_ok2_sound_buffer);
 	placement_error_sound.setBuffer(placement_error_sound_buffer);
 	winner_sound.setBuffer(winner_sound_buffer);
+	tie_sound.setBuffer(tie_sound_buffer);
 
 }
 
@@ -191,6 +200,11 @@ int SceneBattlefield::handle(sf::Event* xevent)
 					winner_sound.play();
 					std::cout << "We have a winner: " << instance->getWinner();
 				}
+
+				if (instance->checkTie())
+				{
+					tie_sound.play();
+				}
 			}
 
 		}
@@ -264,6 +278,12 @@ void SceneBattlefield::render()
 	{
 		window->draw(o_winner_mat);
 		window->draw(o_winner_notice);
+		window->draw(playagain_button);
+	}
+	else if (instance->checkTie())
+	{
+		window->draw(tie_mat);
+		window->draw(tie_notice);
 		window->draw(playagain_button);
 	}
 
@@ -435,6 +455,6 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 
 void SceneBattlefield::reset()
 {
-	// Reset instance
+	// Instance = game model. The truth. The source...
 	instance->reset();
 }

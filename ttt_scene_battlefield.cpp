@@ -101,7 +101,14 @@ int SceneBattlefield::handle(sf::Event* xevent)
 		if (board_grid_coords[0] >= 0)
 		{
 			instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
+
+			if (instance->getWinner() != ' ')
+			{
+				std::cout << "We have a winner: " << instance->getWinner();
+			}
 		}
+
+		std::cout << "Mouse pressed at" << std::endl;
 	}
 
 	return new_scene;

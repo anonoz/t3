@@ -21,7 +21,7 @@ class TTT_Instance
 		int getCurrentBoardId();
 
 		std::vector< std::vector<char> > getMainBoard();
-		bool getWinningStatus();
+		char getWinner();
 };
 
 #endif

@@ -95,11 +95,55 @@ int TTT_Instance::getCurrentBoardId()
 }
 
 // For each board, check if O and X took down either of the 3 verticals, 3 horizontals or the 2 diagonals.
-bool TTT_Instance::getWinningStatus()
+char TTT_Instance::getWinner()
 {
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
-		// For each board
+		vector< char > board = main_board[ board_id ];
 
+		// Check horizontal lines
+		if (board[0] == board[1] && board[1] == board[2])
+		{
+			if (board[0] != ' ') return board[0];
+		}
+
+		if (board[3] == board[4] && board[4] == board[5])
+		{
+			if (board[3] != ' ') return board[3];
+		}
+
+		if (board[6] == board[7] && board[7] == board[8])
+		{
+			if (board[6] != ' ') return board[3];
+		}
+
+		// Check vertical lines
+		if (board[0] == board[3] && board[3] == board[6])
+		{
+			if (board[0] != ' ') return board[0];
+		}
+
+		if (board[1] == board[4] && board[4] == board[7])
+		{
+			if (board[1] != ' ') return board[1];
+		}
+
+		if (board[2] == board[5] && board[5] == board[8])
+		{
+			if (board[2] != ' ') return board[2];
+		}
+
+		// Check diagonal lines
+		if (board[0] == board[4] && board[4] == board[8])
+		{
+			if (board[0] != ' ') return board[0];
+		}
+
+		if (board[2] == board[4] && board[4] == board[6])
+		{
+			if (board[2] != ' ') return board[2];
+		}
 	}
+
+	return ' ';
 }

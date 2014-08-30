@@ -47,8 +47,14 @@ std::vector< std::vector<char> > TTT_Instance::getMainBoard()
 	return main_board;
 }
 
-bool TTT_Instance::setGrid(int grid_id)
+bool TTT_Instance::setGrid(int board_id, int grid_id)
 {
+	if (board_id != current_board_id)
+	{
+		std::cout << "Not the active board" << std::endl;
+		return false;
+	}
+
 	// Check if someone placed there before
 	if (getGrid(current_board_id, grid_id) == ' ')
 	{
@@ -80,6 +86,12 @@ char TTT_Instance::getGrid(int board_id, int grid_id)
 char TTT_Instance::getCurrentPlayer()
 {
 	return current_player;
+}
+
+// Which board is active for piece placement?
+int TTT_Instance::getCurrentBoardId()
+{
+	return current_board_id;
 }
 
 // For each board, check if O and X took down either of the 3 verticals, 3 horizontals or the 2 diagonals.

@@ -22,7 +22,7 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	battle_board.setTextureRect( sf::IntRect(0, 0, battle_board_texture_size.x, battle_board_texture_size.y) );
 
 	// Create marker textures and rectangle
-	sf::Texture* x_marker_texture = TTTHelpers::load_texture("assets/images/x-marker.png");
+	x_marker_texture = TTTHelpers::load_texture("assets/images/x-marker.png");
 	sf::Vector2u x_marker_texture_size = x_marker_texture->getSize();
 
 	x_marker.setTexture(x_marker_texture);
@@ -31,14 +31,17 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 
 	x_marker.setPosition(getGridCoordinates(8,8));
 
-	sf::Texture* o_marker_texture = TTTHelpers::load_texture("assets/images/o-marker.png");
+	o_marker_texture = TTTHelpers::load_texture("assets/images/o-marker.png");
 	sf::Vector2u o_marker_texture_size = o_marker_texture->getSize();
 
 	o_marker.setTexture(o_marker_texture);
 	o_marker.setSize( sf::Vector2f(o_marker_texture_size.x, o_marker_texture_size.y) );
 	o_marker.setTextureRect( sf::IntRect(0, 0, o_marker_texture_size.x, o_marker_texture_size.y) );
 
-	// Create mouse cursors
+	// Create mouse cursors (the inactive textures too)
+	x_marker_inactive_texture = TTTHelpers::load_texture("assets/images/x-cursor-inactive.png");
+	o_marker_inactive_texture = TTTHelpers::load_texture("assets/images/o-cursor-inactive.png");
+
 	mouse_cursor = x_marker;
 	mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
 
@@ -81,15 +84,24 @@ int SceneBattlefield::handle(sf::Event* xevent)
 		cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
 		mouse_cursor.setPosition(cursor_position);
 
-		// Grid hit
-		std::cout << "Board " << getGridHit(mouse_position)[0] << " Grid " << getGridHit(mouse_position)[1] << std::endl;
+		// getGridHit(mouse_position);
+
+		// Mouse cursor toggling
+		// - ACTIVE if player is targeting active board & empty grid
+		
 	}
 
 	// Things to watch for mouse click:
 	// - Placement of markers
-	if (event->type == sf::Event::MouseButtonReleased)
+	if (event->type == sf::Event::MouseButtonPressed)
 	{
+		std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
 
+		// Do something when its not -1
+		if (board_grid_coords[0] >= 0)
+		{
+			instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
+		}
 	}
 
 	return new_scene;
@@ -97,16 +109,48 @@ int SceneBattlefield::handle(sf::Event* xevent)
 
 void SceneBattlefield::render()
 {
-	// Draw mouse cursor
+	// Facilitate mouse cursor
 	window->setMouseCursorVisible(false);
-
 
 	// Draw mainboard
 	window->draw( battle_board );
 
 	// Draw active halo
+	sf::Vector2f halo_coordinates = getBoardHaloCoorginates( instance->getCurrentBoardId() );
+	if (instance->getCurrentPlayer() == 'X')
+	{
+		x_active_halo.setPosition(halo_coordinates);
+		window->draw( x_active_halo );
+	}
+	else if (instance->getCurrentPlayer() == 'O')
+	{
+		o_active_halo.setPosition(halo_coordinates);
+		window->draw( o_active_halo );
+	}
 
 	// Draw exising markers
+	std::vector< std::vector<char> > main_board = instance->getMainBoard();
+
+	for (int board_id = 0; board_id < 9; board_id++)
+	{
+		for (int grid_id = 0; grid_id < 9; grid_id++)
+		{
+			if (main_board[ board_id ][ grid_id ] == 'X')
+			{
+				sf::RectangleShape x_marker_placements = x_marker;
+				x_marker_placements.setPosition( getGridCoordinates(board_id, grid_id) );
+
+				window->draw( x_marker_placements );
+			}
+			else if (main_board[ board_id ][ grid_id ] == 'O')
+			{
+				sf::RectangleShape o_marker_placements = o_marker;
+				o_marker_placements.setPosition( getGridCoordinates(board_id, grid_id) );
+
+				window->draw( o_marker_placements );
+			}
+		}
+	}
 
 	// Draw hinting halos
 
@@ -146,10 +190,18 @@ sf::Vector2f SceneBattlefield::getGridCoordinates(int board_id, int grid_id)
 	if (grid_id % 3 > 1) top_left_x += delta_grid_x;
 
 	// Y at grid level
-	if (board_id >= 3) top_left_y += delta_grid_y;
-	if (board_id >= 6) top_left_y += delta_grid_y;
+	if (grid_id >= 3) top_left_y += delta_grid_y;
+	if (grid_id >= 6) top_left_y += delta_grid_y;
 
 	return sf::Vector2f(top_left_x, top_left_y);
+}
+
+// Calculate halo board coordinates
+sf::Vector2f SceneBattlefield::getBoardHaloCoorginates(int board_id)
+{
+	sf::Vector2f grid_coords = getGridCoordinates(board_id, 0);
+
+	return sf::Vector2f(grid_coords.x - 22, grid_coords.y - 20);
 }
 
 // Given the mouse coordinates and try to determine whether a grid has been hit
@@ -253,7 +305,7 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 		board_grid[1] = -1;
 	}
 
+	std::cout << "TARGETING: " << board_grid[0] << " " << board_grid[1] << std::endl;
+
 	return board_grid;
 }
-
-// Halo Highlighter

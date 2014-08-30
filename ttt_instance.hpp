@@ -13,9 +13,13 @@ class TTT_Instance
 
 	public:
 		TTT_Instance();
-		bool setGrid(int grid_id);
+		bool setGrid(int board_id, int grid_id);
 		char getGrid(int board_id, int grid_id);
+
 		char getCurrentPlayer();
+		
+		int getCurrentBoardId();
+
 		std::vector< std::vector<char> > getMainBoard();
 		bool getWinningStatus();
 };

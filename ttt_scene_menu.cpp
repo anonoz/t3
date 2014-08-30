@@ -40,8 +40,6 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	mini_board.setPosition((window_size_v2f.x / 2) - (mini_board_texture_size.x / 2), (window_size_v2f.y / 2) - (mini_board_texture_size.y / 2));
 	mini_board.setTextureRect( sf::IntRect(0, 0, mini_board_texture->getSize().x, mini_board_texture->getSize().y) );
 
-
-	std::cout << "Constructed scene_menu" << std::endl;
 }
 
 // INSIDE LOOP
@@ -65,8 +63,6 @@ int SceneMenu::handle(sf::Event* xevent)
 {
 	int new_scene = 0; // by default dont change new scene, thereby 0
 	event = xevent;
-
-	std::cout << "Scene Menu is handling event now " << xevent->type << std::endl;
 
 	// On menu we need to know when user clicks on the buttons
 	switch (xevent->type)

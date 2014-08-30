@@ -24,6 +24,11 @@ class SceneBattlefield
 		TTT_Instance* instance;
 
 		// Visual Elements
+		sf::Texture* x_marker_texture,
+			*o_marker_texture,
+			*x_marker_inactive_texture,
+			*o_marker_inactive_texture;
+
 		sf::RectangleShape battle_board
 			, x_marker
 			, o_marker
@@ -40,6 +45,7 @@ class SceneBattlefield
 		int handle_mouse_click(int click_X, int click_y);
 
 		sf::Vector2f getGridCoordinates(int board_id, int grid_id);
+		sf::Vector2f getBoardHaloCoorginates(int board_id);
 		std::vector<int> getGridHit(const sf::Vector2f& mouse_coords);
 };
 

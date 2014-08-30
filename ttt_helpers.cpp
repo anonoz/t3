@@ -1,10 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-
-using namespace std;
+#include "ttt_helpers.hpp"
 
 namespace TTTHelpers
 {
@@ -38,6 +32,22 @@ namespace TTTHelpers
 		}
 
 		return texture;
+	}
+
+	sf::SoundBuffer* load_sound_buffer(const std::string& soundFilename)
+	{
+		sf::SoundBuffer* sound_buffer = new sf::SoundBuffer();
+
+		if (!sound_buffer->loadFromFile(soundFilename))
+		{
+			exit(1);
+		}
+		else
+		{
+			std::cout << soundFilename << " soundbyte loaded" << std::endl;
+		}
+
+		return sound_buffer;
 	}
 
 	void set_text_string(sf::Text& myText, const std::string& myString, const std::string& myOriginPositionFlags = "LT")

@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -43,7 +44,23 @@ class SceneBattlefield
 			, mouse_cursor
 			, x_winner_mat
 			, o_winner_mat
-			, winner_mat_playagain_button;
+			, playagain_button;
+
+		sf::SoundBuffer* hover_grid_sound_buffer,
+			placement_ok1_sound_buffer,
+			placement_ok2_sound_buffer,
+			placement_error_sound_buffer,
+			winner_sound_buffer,
+			tie_sound_buffer,
+			loser_sound_buffer;
+
+		sf::Sound hover_grid_sound,
+			placement_ok1_sound,
+			placement_ok2_sound,
+			placement_error_sound,
+			winner_sound,
+			tie_sound,
+			loser_sound;
 
 	public:
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);

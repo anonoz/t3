@@ -87,6 +87,24 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	TTTHelpers::set_text_string(x_winner_notice, "PLAYER O WON", "CT");
 
 	// Create winner mat play again inactive and active buttons
+	sf::Texture* playagain_button_texture = TTTHelpers::load_texture("assets/images/playagain-button.png");
+	sf::Vector2u playagain_button_texture_size = playagain_button_texture->getSize();
+
+	playagain_button.setTexture(playagain_button_texture);
+	playagain_button.setSize( sf::Vector2f(playagain_button_texture_size.x, playagain_button_texture_size.y));
+	playagain_button.setTextureRect(sf::IntRect(0, 0, playagain_button_texture_size.x, playagain_button_texture_size.y));
+	playagain_button.setPosition( (window_size_v2f.x / 2) - (playagain_button.getSize().x / 2) , (window_size_v2f.y / 2) - (playagain_button.getSize().y / 2) + 20);
+
+	// Create the soundbytes
+	placement_ok1_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_1.ogg");
+	placement_ok2_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_2.ogg");
+	placement_error_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_error.ogg");
+	winner_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_win.ogg");
+
+	placement_ok1_sound.setBuffer(placement_ok1_sound_buffer);
+	placement_ok2_sound.setBuffer(placement_ok2_sound_buffer);
+	placement_error_sound.setBuffer(placement_error_sound_buffer);
+	winner_sound.setBuffer(winner_sound_buffer);
 
 }
 
@@ -120,19 +138,43 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	// - Placement of markers
 	if (event->type == sf::Event::MouseButtonPressed)
 	{
-		std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
-
-		// Do something when its not -1
-		if (board_grid_coords[0] >= 0)
+		if (instance->getWinner() == ' ')
 		{
-			instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
+			std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
 
-			if (instance->getWinner() != ' ')
+			// Do something when its not -1
+			if (board_grid_coords[0] >= 0)
 			{
-				std::cout << "We have a winner: " << instance->getWinner();
-			}
-		}
+				bool placement_successful = instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
 
+				int which_sound_to_play = rand() % 1;
+				if (placement_successful && which_sound_to_play)
+				{
+					placement_ok1_sound.play();
+				}
+				else if (placement_successful && !which_sound_to_play)
+				{
+					placement_ok2_sound.play();
+				}
+				else
+				{
+					placement_error_sound.play();
+				}
+
+				if (instance->getWinner() != ' ')
+				{
+					winner_sound.play();
+					std::cout << "We have a winner: " << instance->getWinner();
+				}
+			}
+
+		}
+		else
+		{
+			// Handle play again button
+
+		}
+	
 		std::cout << "Mouse pressed at" << std::endl;
 	}
 
@@ -188,11 +230,13 @@ void SceneBattlefield::render()
 	{
 		window->draw(x_winner_mat);
 		window->draw(x_winner_notice);
+		window->draw(playagain_button);
 	}
 	else if (instance->getWinner() == 'O')
 	{
 		window->draw(o_winner_mat);
 		window->draw(o_winner_notice);
+		window->draw(playagain_button);
 	}
 
 	// If got winner draw play again button too

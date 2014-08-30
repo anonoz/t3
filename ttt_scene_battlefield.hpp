@@ -29,6 +29,10 @@ class SceneBattlefield
 			*x_marker_inactive_texture,
 			*o_marker_inactive_texture;
 
+		sf::Text x_winner_notice,
+			o_winner_notice,
+			play_again;
+
 		sf::RectangleShape battle_board
 			, x_marker
 			, o_marker
@@ -36,7 +40,10 @@ class SceneBattlefield
 			, o_active_halo
 			, x_hint_halo
 			, o_hint_halo
-			, mouse_cursor;
+			, mouse_cursor
+			, x_winner_mat
+			, o_winner_mat
+			, winner_mat_playagain_button;
 
 	public:
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);

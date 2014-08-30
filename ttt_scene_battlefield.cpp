@@ -61,6 +61,32 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 
 	// Create grid hitzones for event handling
 
+	// Create winner mat
+	sf::Texture* x_winner_mat_texture = TTTHelpers::load_texture("assets/images/x-winner-mat.png");
+	sf::Texture* o_winner_mat_texture = TTTHelpers::load_texture("assets/images/o-winner-mat.png");
+
+	sf::Vector2u winner_mat_texture_size = x_winner_mat_texture->getSize();
+
+	x_winner_mat.setTexture(x_winner_mat_texture);
+	x_winner_mat.setSize( sf::Vector2f(winner_mat_texture_size.x, winner_mat_texture_size.y) );
+	x_winner_mat.setTextureRect( sf::IntRect(0, 0, winner_mat_texture_size.x, winner_mat_texture_size.y) );
+	x_winner_mat.setPosition( (window_size_v2f.x / 2) - (winner_mat_texture_size.x / 2), (window_size_v2f.y / 2) - (winner_mat_texture_size.y / 2) );
+
+	o_winner_mat = x_winner_mat;
+	o_winner_mat.setTexture(o_winner_mat_texture);
+
+	// Create winner mat textual notices
+	x_winner_notice.setFont(*((*ttt_fonts)[4]));
+	x_winner_notice.setColor(sf::Color::White);
+	x_winner_notice.setStyle(sf::Text::Regular);
+	x_winner_notice.setCharacterSize(80);
+	x_winner_notice.setPosition(x_winner_mat.getPosition().x + x_winner_mat.getSize().x / 2, (x_winner_mat.getPosition().y + x_winner_mat.getSize().y / 2) - 60);
+	TTTHelpers::set_text_string(x_winner_notice, "PLAYER X WON", "CT");
+
+	o_winner_notice = x_winner_notice;
+	TTTHelpers::set_text_string(x_winner_notice, "PLAYER O WON", "CT");
+
+	// Create winner mat play again inactive and active buttons
 
 }
 
@@ -115,9 +141,6 @@ int SceneBattlefield::handle(sf::Event* xevent)
 
 void SceneBattlefield::render()
 {
-	// Draw mouse cursor
-	window->setMouseCursorVisible(false);
-
 	// Draw mainboard
 	window->draw( battle_board );
 
@@ -160,9 +183,31 @@ void SceneBattlefield::render()
 
 	// Draw hinting halos
 
+	// Draw winner mat
+	if (instance->getWinner() == 'X')
+	{
+		window->draw(x_winner_mat);
+		window->draw(x_winner_notice);
+	}
+	else if (instance->getWinner() == 'O')
+	{
+		window->draw(o_winner_mat);
+		window->draw(o_winner_notice);
+	}
+
+	// If got winner draw play again button too
+
 	// Draw cursors
-	mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
-	window->draw(mouse_cursor);
+	if (instance->getWinner() == ' ')
+	{
+		mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
+		window->setMouseCursorVisible(false);
+		window->draw(mouse_cursor);
+	}
+	else
+	{
+		window->setMouseCursorVisible(true);
+	}
 }
 
 // Given the ID of board and grid, return the coordinates for renderer

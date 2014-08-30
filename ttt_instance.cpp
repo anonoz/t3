@@ -114,7 +114,7 @@ char TTT_Instance::getWinner()
 
 		if (board[6] == board[7] && board[7] == board[8])
 		{
-			if (board[6] != ' ') return board[3];
+			if (board[6] != ' ') return board[6];
 		}
 
 		// Check vertical lines

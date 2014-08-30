@@ -25,6 +25,12 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 	sf::Font* kenpixel_square = TTTHelpers::load_font("assets/fonts/kenpixel_square.ttf");
 		ttt_fonts.push_back(kenpixel_square);
 
+	sf::Font* kenpixel = TTTHelpers::load_font("assets/fonts/kenpixel.ttf");
+		ttt_fonts.push_back(kenpixel);
+
+	sf::Font* kenvector_future = TTTHelpers::load_font("assets/fonts/kenvector_future.ttf");
+		ttt_fonts.push_back(kenvector_future);
+
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);
 	std::cout << "Scene menu created in director... "<< std::endl;

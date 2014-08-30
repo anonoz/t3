@@ -30,6 +30,7 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 	std::cout << "Scene menu created in director... "<< std::endl;
 
 	scene_battlefield = new SceneBattlefield(window, &ttt_fonts);
+	std::cout << "Scene battlefield created in director... " << std::endl;
 
 	// Set graphics state
 	setCurrentScene(0);

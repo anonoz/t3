@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 #include "ttt_helpers.hpp"
+#include "ttt_instance.hpp"
 
 using namespace std;
 
@@ -19,6 +20,9 @@ class SceneBattlefield
 		sf::Event* event;
 		std::vector< sf::Font* >* ttt_fonts;
 
+		// Instance initiation
+		TTT_Instance* instance;
+
 		// Visual Elements
 		sf::RectangleShape battle_board
 			, x_marker
@@ -26,7 +30,8 @@ class SceneBattlefield
 			, x_active_halo
 			, o_active_halo
 			, x_hint_halo
-			, o_hint_halo;
+			, o_hint_halo
+			, mouse_cursor;
 
 	public:
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
@@ -35,6 +40,7 @@ class SceneBattlefield
 		int handle_mouse_click(int click_X, int click_y);
 
 		sf::Vector2f getGridCoordinates(int board_id, int grid_id);
+		std::vector<int> getGridHit(const sf::Vector2f& mouse_coords);
 };
 
 #endif

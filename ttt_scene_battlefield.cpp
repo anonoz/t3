@@ -5,6 +5,10 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	window = xwindow;
 	ttt_fonts = xttt_fonts;
 
+	// Create a new game instance
+	instance = new TTT_Instance();
+	std::cout << "Game instance created in battlefield" << std::endl;
+
 	// Some RenderWindow calculations
 	sf::Vector2f window_size_v2f(window->getSize());
 
@@ -25,8 +29,7 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	x_marker.setSize( sf::Vector2f(x_marker_texture_size.x, x_marker_texture_size.y) );
 	x_marker.setTextureRect( sf::IntRect(0, 0, x_marker_texture_size.x, x_marker_texture_size.y) );
 
-		//testing
-		x_marker.setPosition(getGridCoordinates(3,3));
+	x_marker.setPosition(getGridCoordinates(8,8));
 
 	sf::Texture* o_marker_texture = TTTHelpers::load_texture("assets/images/o-marker.png");
 	sf::Vector2u o_marker_texture_size = o_marker_texture->getSize();
@@ -36,10 +39,27 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_marker.setTextureRect( sf::IntRect(0, 0, o_marker_texture_size.x, o_marker_texture_size.y) );
 
 	// Create mouse cursors
+	mouse_cursor = x_marker;
+	mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
 
 	// Create active halos
+	sf::Texture* x_active_halo_texture = TTTHelpers::load_texture("assets/images/x-active-halo-bg.png");
+	sf::Texture* o_active_halo_texture = TTTHelpers::load_texture("assets/images/o-active-halo-bg.png");
+
+	sf::Vector2u x_active_halo_texture_size = x_active_halo_texture->getSize();
+
+	x_active_halo.setTexture(x_active_halo_texture);
+	x_active_halo.setSize( sf::Vector2f(x_active_halo_texture_size.x, x_active_halo_texture_size.y) );
+	x_active_halo.setTextureRect( sf::IntRect(0, 0, x_active_halo_texture_size.x, x_active_halo_texture_size.y) );
+
+	o_active_halo = x_active_halo;
+	o_active_halo.setTexture(o_active_halo_texture);
 
 	// Create hinting halos
+
+	// Create grid hitzones for event handling
+
+
 }
 
 int SceneBattlefield::handle(sf::Event* xevent)
@@ -47,24 +67,61 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	int new_scene = 1;
 	event = xevent;
 
+	// Things to watch for mouse movement:
+	// - Cursor tracking
+	// - Cursor gray out for invalid hit zone 
+	// - Halo hinting for grids
+	if (event->type == sf::Event::MouseMoved)
+	{
+		// Mouse Cursor
+		sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+
+		sf::Vector2f cursor_position = mouse_position;
+		cursor_position.x = cursor_position.x - mouse_cursor.getSize().x / 2;
+		cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
+		mouse_cursor.setPosition(cursor_position);
+
+		// Grid hit
+		std::cout << "Board " << getGridHit(mouse_position)[0] << " Grid " << getGridHit(mouse_position)[1] << std::endl;
+	}
+
+	// Things to watch for mouse click:
+	// - Placement of markers
+	if (event->type == sf::Event::MouseButtonReleased)
+	{
+
+	}
+
 	return new_scene;
 }
 
 void SceneBattlefield::render()
 {
+	// Draw mouse cursor
+	window->setMouseCursorVisible(false);
+
+
 	// Draw mainboard
 	window->draw( battle_board );
 
-	window->draw(x_marker);
+	// Draw active halo
+
+	// Draw exising markers
+
+	// Draw hinting halos
+
+	// Draw cursors
+	window->draw(mouse_cursor);
 }
 
+// Given the ID of board and grid, return the coordinates for renderer
 sf::Vector2f SceneBattlefield::getGridCoordinates(int board_id, int grid_id)
 {
 	// sf::Vector2u coordinates;
 
 	// Board level
-	float top_left_x = 150;
-	float top_left_y = 40;
+	float top_left_x = 147;
+	float top_left_y = 37;
 
 	int delta_board_x = 173;
 	int delta_board_y = 183;
@@ -94,3 +151,109 @@ sf::Vector2f SceneBattlefield::getGridCoordinates(int board_id, int grid_id)
 
 	return sf::Vector2f(top_left_x, top_left_y);
 }
+
+// Given the mouse coordinates and try to determine whether a grid has been hit
+std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
+{
+	int hit_x = mouse_coords.x, hit_y = mouse_coords.y;
+
+	int top_left_x = 147, top_left_y = 37;
+	int delta_board_x = 173, delta_board_y = 183;
+	int delta_grid_x = 50, delta_grid_y = 50;
+
+	std::vector<int> board_grid(2, -1);
+
+	// Column 1 board
+	if (hit_x >= top_left_x && hit_x <= top_left_x + 3 * delta_grid_x)
+	{
+		board_grid[0] = 0;
+	}
+	// Column 2 board
+	else if (hit_x >= top_left_x + delta_board_x && hit_x <= top_left_x + delta_board_x + 3 * delta_grid_x)
+	{
+		board_grid[0] = 1;
+	}
+	// Column 3 board
+	else if (hit_x >= top_left_x + 2 * delta_board_x && hit_x <= top_left_x + 2 * delta_board_x + 3 * delta_grid_x ) {
+		board_grid[0] = 2;
+	}
+	// Oops, out of board!
+	else {
+		board_grid[0] = -1;
+
+		// Short circuit
+		return board_grid;
+	}
+
+	// Row 1 board
+	if (hit_y >= top_left_y && hit_y <= top_left_y + 3 * delta_grid_y)
+	{
+		// board_grid[0] = 0;
+	}
+	// Row 2 board
+	else if (hit_y >= top_left_y + delta_board_y && hit_y <= top_left_y + delta_board_y + 3 * delta_grid_y)
+	{
+		board_grid[0] += 3;
+	}
+	// Row 3 board
+	else if (hit_y >= top_left_y + 2 * delta_board_y && hit_y <= top_left_y + 2 * delta_board_y + 3 * delta_grid_y ) {
+		board_grid[0] += 6;
+	}
+	// Oops, out of board!
+	else {
+		board_grid[0] = -1;
+
+		// Short circuit again
+		return board_grid;
+	}
+
+	// Before we calculate grid, we minus off the hit coords
+
+	if (board_grid[0] % 3 == 0) hit_x -= top_left_x;
+	if (board_grid[0] % 3 == 1) hit_x -= top_left_x + delta_board_x;
+	if (board_grid[0] % 3 == 2) hit_x -= top_left_x + 2 * delta_board_x;
+
+	if (board_grid[0] / 3 == 0) hit_y -= top_left_y;
+	if (board_grid[0] / 3 == 1) hit_y -= top_left_y + delta_board_y;
+	if (board_grid[0] / 3 == 2) hit_y -= top_left_y + 2 * delta_board_y;
+
+	// Calculate grid now
+	if (hit_x <= delta_grid_x)
+	{
+		board_grid[1] = 0;
+	}
+	else if (hit_x > 1 * delta_grid_x && hit_x <= 2 * delta_grid_x)
+	{
+		board_grid[1] = 1;
+	}
+	else if (hit_x > 2 * delta_grid_x && hit_x <= 3 * delta_grid_x)
+	{
+		board_grid[1] = 2;
+	}
+	else
+	{
+		board_grid[1] = -1;
+	}
+
+	// grid Y
+	if (hit_y <= delta_grid_y)
+	{
+		// board_grid[1] += 0;
+	}
+	else if (hit_y > 1 * delta_grid_y && hit_y <= 2 * delta_grid_y)
+	{
+		board_grid[1] += 3;
+	}
+	else if (hit_y > 2 * delta_grid_y && hit_y <= 3 * delta_grid_y)
+	{
+		board_grid[1] += 6;
+	}
+	else
+	{
+		board_grid[1] = -1;
+	}
+
+	return board_grid;
+}
+
+// Halo Highlighter

@@ -25,12 +25,9 @@ int main()
 	window->setKeyRepeatEnabled(false);
 
 	// Initiate scene director (graphics dpt)
-	cout << "Invoking scene director... " << endl;
 	SceneDirector director(window);
-	cout << "Scene director is up" << endl;
 
 	// Here goes the actual loop
-	cout << "Starting main loop... " << endl;
 	while (window->isOpen())
 	{
 		// The obligatory event handler
@@ -44,7 +41,6 @@ int main()
 			// Let scene director delegate event handling to other scenes
 			if (director.getCurrentScene() >= 0 and director.getCurrentScene() <= 4)
 			{
-				cout << "Delegating event handling to director... " << endl;
 				director.handle(event);
 			}
 			else
@@ -57,9 +53,7 @@ int main()
 		window->clear(sf::Color::White);
 
 		// Let director render
-		cout << "Calling render... " << endl;
 		director.render();
-		cout << "Rendering done! " << endl;
 
 		// Finalise loop
 		window->display();

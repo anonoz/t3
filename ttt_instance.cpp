@@ -23,17 +23,23 @@ TTT_Instance::TTT_Instance()
 	// Wipe the game clean
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
+		vector< char > board;
+
 		for (int grid_id = 0; grid_id < 9; grid_id++)
 		{
-			main_board[ board_id ][ grid_id ] = ' ';
+			board.push_back(' ');
 		}
+
+		main_board.push_back(board);
 	}
 
 	// Random board
 	current_board_id = rand() % 8;
 
 	// Player O starts first
-	current_player = 'O';
+	current_player = 'X';
+
+	std::cout << "TTT_INSTANCE constructed" << std::endl;
 }
 
 std::vector< std::vector<char> > TTT_Instance::getMainBoard()
@@ -70,12 +76,18 @@ char TTT_Instance::getGrid(int board_id, int grid_id)
 	return main_board[ board_id ][ grid_id ];
 }
 
+// Who is playing?
+char TTT_Instance::getCurrentPlayer()
+{
+	return current_player;
+}
+
 // For each board, check if O and X took down either of the 3 verticals, 3 horizontals or the 2 diagonals.
 bool TTT_Instance::getWinningStatus()
 {
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
-
+		// For each board
 
 	}
 }

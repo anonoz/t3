@@ -47,7 +47,7 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 // INSIDE LOOP
 void SceneMenu::render()
 {
-	std::cout<<"DRAW"<<std::endl;
+	window->setMouseCursorVisible(true);
 
 	// Draw heading 1
 	window->draw(heading1);

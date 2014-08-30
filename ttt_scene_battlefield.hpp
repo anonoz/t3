@@ -33,6 +33,8 @@ class SceneBattlefield
 		void render();
 		int handle(sf::Event* xevent);
 		int handle_mouse_click(int click_X, int click_y);
+
+		sf::Vector2f getGridCoordinates(int board_id, int grid_id);
 };
 
 #endif

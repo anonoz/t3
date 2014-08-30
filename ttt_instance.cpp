@@ -29,8 +29,16 @@ TTT_Instance::TTT_Instance()
 		}
 	}
 
+	// Random board
+	current_board_id = rand() % 8;
+
 	// Player O starts first
 	current_player = 'O';
+}
+
+std::vector< std::vector<char> > TTT_Instance::getMainBoard()
+{
+	return main_board;
 }
 
 bool TTT_Instance::setGrid(int grid_id)

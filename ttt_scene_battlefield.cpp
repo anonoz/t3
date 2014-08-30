@@ -39,8 +39,8 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_marker.setTextureRect( sf::IntRect(0, 0, o_marker_texture_size.x, o_marker_texture_size.y) );
 
 	// Create mouse cursors (the inactive textures too)
-	x_marker_inactive_texture = TTTHelpers::load_texture("assets/images/x-cursor-inactive.png");
-	o_marker_inactive_texture = TTTHelpers::load_texture("assets/images/o-cursor-inactive.png");
+	x_marker_inactive_texture = TTTHelpers::load_texture("assets/images/x-marker-inactive.png");
+	o_marker_inactive_texture = TTTHelpers::load_texture("assets/images/o-marker-inactive.png");
 
 	mouse_cursor = x_marker;
 
@@ -131,6 +131,31 @@ int SceneBattlefield::handle(sf::Event* xevent)
 
 		// Mouse cursor toggling
 		// - ACTIVE if player is targeting active board & empty grid
+		std::vector< int > board_grid_coords = getGridHit( mouse_position );
+		if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
+		{
+			if (instance->getCurrentPlayer() == 'X')
+			{
+				mouse_cursor.setTexture(x_marker_texture);
+			}
+			else
+			{
+				mouse_cursor.setTexture(o_marker_texture);
+			}
+		}
+		else
+		{
+			if (instance->getCurrentPlayer() == 'X')
+			{
+				mouse_cursor.setTexture(x_marker_inactive_texture);
+				std::cout << "X inactive" << std::endl;
+			}
+			else
+			{
+				mouse_cursor.setTexture(o_marker_inactive_texture);
+			}
+		}
+		mouse_cursor.setTextureRect( sf::IntRect(0, 0, x_marker_texture->getSize().x, x_marker_texture->getSize().y) );
 		
 	}
 
@@ -247,7 +272,6 @@ void SceneBattlefield::render()
 	// Draw cursors
 	if (instance->getWinner() == ' ')
 	{
-		mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
 		window->setMouseCursorVisible(false);
 		window->draw(mouse_cursor);
 	}

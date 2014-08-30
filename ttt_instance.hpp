@@ -16,6 +16,7 @@ class TTT_Instance
 		void reset();
 		bool setGrid(int board_id, int grid_id);
 		char getGrid(int board_id, int grid_id);
+		bool checkGrid(int board_id, int grid_id);
 
 		char getCurrentPlayer();
 		

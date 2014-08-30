@@ -55,14 +55,8 @@ std::vector< std::vector<char> > TTT_Instance::getMainBoard()
 
 bool TTT_Instance::setGrid(int board_id, int grid_id)
 {
-	if (board_id != current_board_id)
-	{
-		std::cout << "Not the active board" << std::endl;
-		return false;
-	}
-
 	// Check if someone placed there before
-	if (getGrid(current_board_id, grid_id) == ' ')
+	if (checkGrid(board_id, grid_id))
 	{
 		main_board[ current_board_id ][ grid_id ] = current_player;
 
@@ -86,6 +80,18 @@ char TTT_Instance::getGrid(int board_id, int grid_id)
 		return ' ';
 
 	return main_board[ board_id ][ grid_id ];
+}
+
+// Can I place here? Let's explicit
+bool TTT_Instance::checkGrid(int board_id, int grid_id)
+{
+	if (board_id != current_board_id)
+		return false;
+
+	if (main_board[board_id][grid_id] != ' ')
+		return false;
+
+	return true;
 }
 
 // Who is playing?

@@ -43,7 +43,6 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_marker_inactive_texture = TTTHelpers::load_texture("assets/images/o-cursor-inactive.png");
 
 	mouse_cursor = x_marker;
-	mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
 
 	// Create active halos
 	sf::Texture* x_active_halo_texture = TTTHelpers::load_texture("assets/images/x-active-halo-bg.png");
@@ -116,7 +115,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 
 void SceneBattlefield::render()
 {
-	// Facilitate mouse cursor
+	// Draw mouse cursor
 	window->setMouseCursorVisible(false);
 
 	// Draw mainboard
@@ -162,6 +161,7 @@ void SceneBattlefield::render()
 	// Draw hinting halos
 
 	// Draw cursors
+	mouse_cursor.setTexture((instance->getCurrentPlayer() == 'X') ? x_marker_texture : o_marker_texture);
 	window->draw(mouse_cursor);
 }
 

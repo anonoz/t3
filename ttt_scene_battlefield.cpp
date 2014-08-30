@@ -214,6 +214,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 			if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
 			{
 				reset();
+				new_scene = 0;
 			}
 		}
 	

@@ -8,11 +8,11 @@ using namespace std;
 
 namespace TTTHelpers
 {
-	sf::Font load_font(const std::string& fontFilename)
+	sf::Font* load_font(const std::string& fontFilename)
 	{
-		sf::Font font;
+		sf::Font* font_pointer = new sf::Font();
 
-		if (!font.loadFromFile(fontFilename))
+		if (!font_pointer->loadFromFile(fontFilename))
 		{
 			exit(1);
 		}
@@ -21,14 +21,14 @@ namespace TTTHelpers
 			std::cout << fontFilename << " font loaded" << std::endl;
 		}
 
-		return font;
+		return font_pointer;
 	}
 
-	sf::Texture load_texture(const std::string& imageFilename)
+	sf::Texture* load_texture(const std::string& imageFilename)
 	{
-		sf::Texture texture;
+		sf::Texture* texture = new sf::Texture();
 
-		if (!texture.loadFromFile(imageFilename))
+		if (!texture->loadFromFile(imageFilename))
 		{
 			exit(1);
 		}

@@ -10,6 +10,7 @@ class SceneMenu
 
 		// Visual Elements
 		sf::Text heading1, start_button, about_button;
+		sf::RectangleShape mini_board;
 
 	public:
 		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);

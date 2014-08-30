@@ -15,8 +15,14 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 	window = xwindow;
 
 	// Load fonts
-	sf::Font kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
-		ttt_fonts.push_back(&kenvector_future_thin);
+	sf::Font* kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
+		ttt_fonts.push_back(kenvector_future_thin);
+
+	sf::Font* kenpixel_blocks = TTTHelpers::load_font("assets/fonts/kenpixel_blocks.ttf");
+		ttt_fonts.push_back(kenpixel_blocks);
+
+	sf::Font* kenpixel_square = TTTHelpers::load_font("assets/fonts/kenpixel_square.ttf");
+		ttt_fonts.push_back(kenpixel_square);
 
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);

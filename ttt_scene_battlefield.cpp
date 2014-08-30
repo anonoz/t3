@@ -77,16 +77,16 @@ sf::Vector2f SceneBattlefield::getGridCoordinates(int board_id, int grid_id)
 	int delta_grid_y = 50;
 
 	// Calculate X at board level (translation of coords inside battlefield)
-	if (board_id % 3 == 1) top_left_x += delta_board_x;
-	if (board_id % 3 == 2) top_left_x += delta_board_x;
+	if (board_id % 3 > 0) top_left_x += delta_board_x;
+	if (board_id % 3 > 1) top_left_x += delta_board_x;
 
 	// Board Y at board level
 	if (board_id >= 3) top_left_y += delta_board_y;
 	if (board_id >= 6) top_left_y += delta_board_y;
 
 	// X at grid level (translation of coords inside a board)
-	if (grid_id % 3 == 1) top_left_x += delta_grid_x;
-	if (grid_id % 3 == 2) top_left_x += delta_grid_x;
+	if (grid_id % 3 > 0) top_left_x += delta_grid_x;
+	if (grid_id % 3 > 1) top_left_x += delta_grid_x;
 
 	// Y at grid level
 	if (board_id >= 3) top_left_y += delta_grid_y;

@@ -67,4 +67,10 @@ namespace TTTHelpers
 
 		myText.setOrigin(myOriginX, myOriginY);
 	}
+	
+	void set_text_string(sf::Text& myText, const std::string& myString)
+	{
+		set_text_string(myText, myString, "LT");
+	}
+
 };

@@ -8,6 +8,7 @@
 #include <cstdlib>
 
 #include "ttt_scene_menu.hpp"
+#include "ttt_scene_battlefield.hpp"
 
 class SceneDirector
 {
@@ -18,6 +19,7 @@ class SceneDirector
 		std::vector< sf::Font* > ttt_fonts;
 
 		SceneMenu*		scene_menu;
+		SceneBattlefield* scene_battlefield;
 
 	public:
 		SceneDirector(sf::RenderWindow* xwindow);

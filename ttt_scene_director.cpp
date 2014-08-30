@@ -7,6 +7,7 @@
 // TTT files
 #include "ttt_helpers.hpp"
 #include "ttt_scene_menu.hpp"
+#include "ttt_scene_battlefield.hpp"
 
 #include "ttt_scene_director.hpp"
 
@@ -27,6 +28,8 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);
 	std::cout << "Scene menu created in director... "<< std::endl;
+
+	scene_battlefield = new SceneBattlefield(window, &ttt_fonts);
 
 	// Set graphics state
 	setCurrentScene(0);
@@ -56,6 +59,9 @@ void SceneDirector::handle(sf::Event* xevent)
 		case 0:
 			setCurrentScene(scene_menu->handle(xevent));
 			break;
+		case 1:
+			setCurrentScene(scene_battlefield->handle(xevent));
+			break;
 	}
 }
 
@@ -65,6 +71,9 @@ void SceneDirector::render()
 	{
 		case 0:
 			scene_menu->render();
+			break;
+		case 1:
+			scene_battlefield->render();
 			break;
 	}
 }

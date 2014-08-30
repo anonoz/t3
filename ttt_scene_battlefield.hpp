@@ -8,10 +8,10 @@
 
 using namespace std;
 
-#ifndef SCENE_MENU_HPP
-#define SCENE_MENU_HPP
+#ifndef TTT_SCENE_BATTLEFIED_HPP
+#define TTT_SCENE_BATTLEFIED_HPP
 
-class SceneMenu
+class SceneBattlefield
 {
 	private:
 		// Gamewide
@@ -20,11 +20,16 @@ class SceneMenu
 		std::vector< sf::Font* >* ttt_fonts;
 
 		// Visual Elements
-		sf::Text heading1, start_button, about_button;
-		sf::RectangleShape mini_board;
+		sf::RectangleShape battle_board
+			, x_marker
+			, o_marker
+			, x_active_halo
+			, o_active_halo
+			, x_hint_halo
+			, o_hint_halo;
 
 	public:
-		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
+		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
 		void render();
 		int handle(sf::Event* xevent);
 		int handle_mouse_click(int click_X, int click_y);

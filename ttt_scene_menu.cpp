@@ -1,11 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-
-// TTT files
-#include "ttt_helpers.hpp"
 #include "ttt_scene_menu.hpp"
 
 SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts)
@@ -94,7 +86,10 @@ int SceneMenu::handle_mouse_click(int click_x, int click_y)
 {
 	// Start button check
 	if (start_button.getGlobalBounds().contains(click_x, click_y))
+	{
 		std::cout << "OMG START BUTTON IS CLICKED!!!" << std::endl;
+		return 1;
+	}
 
 	return 0;
 }

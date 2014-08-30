@@ -20,7 +20,15 @@
 
 TTT_Instance::TTT_Instance()
 {
-	// Wipe the game clean
+	reset();
+
+	std::cout << "TTT_INSTANCE constructed" << std::endl;
+}
+
+void TTT_Instance::reset()
+{
+	main_board.clear();
+
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
 		vector< char > board;
@@ -38,8 +46,6 @@ TTT_Instance::TTT_Instance()
 
 	// Player O starts first
 	current_player = 'X';
-
-	std::cout << "TTT_INSTANCE constructed" << std::endl;
 }
 
 std::vector< std::vector<char> > TTT_Instance::getMainBoard()
@@ -146,4 +152,19 @@ char TTT_Instance::getWinner()
 	}
 
 	return ' ';
+}
+
+bool TTT_Instance::checkTie()
+{
+	for (int board_id = 0; board_id < 9; board_id++)
+	{
+		for (int grid_id = 0; grid_id < 9; grid_id++)
+		{
+			// If one cell is empty, let them fill up the grid!
+			if (main_board[board_id][grid_id] == ' ')
+				return false;
+		}
+	}
+
+	return true;
 }

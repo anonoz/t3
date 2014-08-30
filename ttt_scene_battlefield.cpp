@@ -93,7 +93,7 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	playagain_button.setTexture(playagain_button_texture);
 	playagain_button.setSize( sf::Vector2f(playagain_button_texture_size.x, playagain_button_texture_size.y));
 	playagain_button.setTextureRect(sf::IntRect(0, 0, playagain_button_texture_size.x, playagain_button_texture_size.y));
-	playagain_button.setPosition( (window_size_v2f.x / 2) - (playagain_button.getSize().x / 2) , (window_size_v2f.y / 2) - (playagain_button.getSize().y / 2) + 20);
+	playagain_button.setPosition( (window_size_v2f.x / 2) - (playagain_button.getSize().x / 2) , (window_size_v2f.y / 2) - (playagain_button.getSize().y / 2) + 40);
 
 	// Create the soundbytes
 	placement_ok1_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_1.ogg");
@@ -172,7 +172,10 @@ int SceneBattlefield::handle(sf::Event* xevent)
 		else
 		{
 			// Handle play again button
-
+			if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
+			{
+				reset();
+			}
 		}
 	
 		std::cout << "Mouse pressed at" << std::endl;
@@ -404,4 +407,10 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 	std::cout << "TARGETING: " << board_grid[0] << " " << board_grid[1] << std::endl;
 
 	return board_grid;
+}
+
+void SceneBattlefield::reset()
+{
+	// Reset instance
+	instance->reset();
 }

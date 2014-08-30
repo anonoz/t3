@@ -13,6 +13,7 @@ class TTT_Instance
 
 	public:
 		TTT_Instance();
+		void reset();
 		bool setGrid(int board_id, int grid_id);
 		char getGrid(int board_id, int grid_id);
 
@@ -22,6 +23,7 @@ class TTT_Instance
 
 		std::vector< std::vector<char> > getMainBoard();
 		char getWinner();
+		bool checkTie();
 };
 
 #endif

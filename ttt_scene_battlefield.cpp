@@ -58,6 +58,18 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_active_halo.setTexture(o_active_halo_texture);
 
 	// Create hinting halos
+	sf::Texture* x_hint_halo_texture = TTTHelpers::load_texture("assets/images/x-hint-halo-bg.png");
+	sf::Texture* o_hint_halo_texture = TTTHelpers::load_texture("assets/images/o-hint-halo-bg.png");
+
+	sf::Vector2u x_hint_halo_texture_size = x_hint_halo_texture->getSize();
+
+	x_hint_halo.setTexture(x_hint_halo_texture);
+	x_hint_halo.setSize( sf::Vector2f(x_hint_halo_texture_size.x, x_hint_halo_texture_size.y) );
+	x_hint_halo.setTextureRect( sf::IntRect(0, 0, x_hint_halo_texture_size.x, x_hint_halo_texture_size.y) );
+	x_hint_halo.setPosition(1000,1000);
+
+	o_hint_halo = x_hint_halo;
+	o_hint_halo.setTexture(o_hint_halo_texture);
 
 	// Create grid hitzones for event handling
 
@@ -136,11 +148,27 @@ int SceneBattlefield::handle(sf::Event* xevent)
 		cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
 		mouse_cursor.setPosition(cursor_position);
 
-		// getGridHit(mouse_position);
+		// Hint halos
+		std::vector< int > board_grid_coords = getGridHit( mouse_position );
+
+		if (board_grid_coords[1] > -1)
+		{
+			sf::Vector2f halo_coordinates = getBoardHaloCoorginates(board_grid_coords[1]);
+
+			if (instance->getCurrentPlayer() == 'X')
+			{
+				o_hint_halo.setPosition(halo_coordinates);
+				x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+			}
+			else
+			{
+				x_hint_halo.setPosition(halo_coordinates);
+				o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+			}
+		}
 
 		// Mouse cursor toggling
 		// - ACTIVE if player is targeting active board & empty grid
-		std::vector< int > board_grid_coords = getGridHit( mouse_position );
 		if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
 		{
 			if (instance->getCurrentPlayer() == 'X')
@@ -242,6 +270,16 @@ void SceneBattlefield::render()
 		window->draw( o_active_halo );
 	}
 
+	// Draw hint halo
+	if (instance->getCurrentPlayer() == 'X')
+	{
+		window->draw(o_hint_halo);
+	}
+	else
+	{
+		window->draw(x_hint_halo);
+	}
+
 	// Draw exising markers
 	std::vector< std::vector<char> > main_board = instance->getMainBoard();
 
@@ -265,8 +303,6 @@ void SceneBattlefield::render()
 			}
 		}
 	}
-
-	// Draw hinting halos
 
 	// Draw winner mat
 	if (instance->getWinner() == 'X')

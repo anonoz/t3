@@ -84,7 +84,7 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	TTTHelpers::set_text_string(x_winner_notice, "PLAYER X WON", "CT");
 
 	o_winner_notice = x_winner_notice;
-	TTTHelpers::set_text_string(x_winner_notice, "PLAYER O WON", "CT");
+	TTTHelpers::set_text_string(o_winner_notice, "PLAYER O WON", "CT");
 
 	// Create winner mat play again inactive and active buttons
 	sf::Texture* playagain_button_texture = TTTHelpers::load_texture("assets/images/playagain-button.png");

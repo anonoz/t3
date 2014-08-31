@@ -6,6 +6,15 @@ Contacts #1 : 0173009142 honsiongchs@gmail.com
 Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <time.h>
+
+// TTT files
+#include "ttt_helpers.hpp"
 
 using namespace std;
 

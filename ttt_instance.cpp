@@ -7,14 +7,6 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-
-// TTT files
-#include "ttt_helpers.hpp"
 #include "ttt_instance.hpp"
 
 // EXPLANATION
@@ -51,6 +43,7 @@ void TTT_Instance::reset()
 	}
 
 	// Random board
+	srand(time(NULL));
 	current_board_id = rand() % 8;
 
 	// Player O starts first

@@ -1,3 +1,12 @@
+/************ P R O J E C T ****************
+Course : TCP1101 Programming Fundamentals
+Session: Trimester 1, 2014/15
+ID and Name #1 : 1131123100 Chong Hon Siong
+Contacts #1 : 0173009142 honsiongchs@gmail.com
+Lecture Section : TC101
+Tutorial Section: TC201
+********************************************/
+
 #ifndef SCENE_DIRECTOR_HPP
 #define SCENE_DIRECTOR_HPP
 

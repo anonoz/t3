@@ -40,12 +40,17 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 	sf::Font* kenvector_future = TTTHelpers::load_font("assets/fonts/kenvector_future.ttf");
 		ttt_fonts.push_back(kenvector_future);
 
+	// Game instance should be controlled from here
+	instance = new TTT_Instance();
+
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);
 	std::cout << "Scene menu created in director... "<< std::endl;
 
-	scene_battlefield = new SceneBattlefield(window, &ttt_fonts);
+	scene_battlefield = new SceneBattlefield(window, &ttt_fonts, instance);
 	std::cout << "Scene battlefield created in director... " << std::endl;
+
+	scene_multiplayer = new SceneMultiplayer(window, &ttt_fonts, instance);
 
 	// Set graphics state
 	setCurrentScene(0);
@@ -63,6 +68,9 @@ void SceneDirector::setCurrentScene(int target_current_scene)
 	if (target_current_scene < 0 || target_current_scene > 4)
 		return;
 
+	// Some scenes would like to be... entered
+	if (target_current_scene == 2) scene_multiplayer->enter();
+
 	current_scene = target_current_scene;
 	return;
 }
@@ -78,6 +86,9 @@ void SceneDirector::handle(sf::Event* xevent)
 		case 1:
 			setCurrentScene(scene_battlefield->handle(xevent));
 			break;
+		case 2:
+			setCurrentScene(scene_multiplayer->handle(xevent));
+			break;
 	}
 }
 
@@ -90,6 +101,9 @@ void SceneDirector::render()
 			break;
 		case 1:
 			scene_battlefield->render();
+			break;
+		case 2:
+			scene_multiplayer->render();
 			break;
 	}
 }

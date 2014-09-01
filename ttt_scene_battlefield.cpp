@@ -9,14 +9,13 @@ Tutorial Section: TC201
 
 #include "ttt_scene_battlefield.hpp"
 
-SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts)
+SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance)
 {
 	window = xwindow;
 	ttt_fonts = xttt_fonts;
 
-	// Create a new game instance
-	instance = new TTT_Instance();
-	std::cout << "Game instance created in battlefield" << std::endl;
+	// Game instance got from director
+	instance = xinstance;
 
 	// Some RenderWindow calculations
 	sf::Vector2f window_size_v2f(window->getSize());
@@ -160,7 +159,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 		// Hint halos
 		std::vector< int > board_grid_coords = getGridHit( mouse_position );
 
-		if (board_grid_coords[1] > -1)
+		if (board_grid_coords[1] > -1 && board_grid_coords[0] == instance->getCurrentBoardId())
 		{
 			sf::Vector2f halo_coordinates = getBoardHaloCoorginates(board_grid_coords[1]);
 
@@ -174,6 +173,11 @@ int SceneBattlefield::handle(sf::Event* xevent)
 				x_hint_halo.setPosition(halo_coordinates);
 				o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
 			}
+		}
+		else
+		{
+			x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+			o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
 		}
 
 		// Mouse cursor toggling

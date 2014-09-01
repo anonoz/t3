@@ -7,6 +7,7 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -29,9 +30,29 @@ class TTT_Instance
 		char current_player;
 		int current_board_id;
 
+		// MP flags
+		unsigned short multiplayer_port;
+		bool multiplayer_mode;
+		bool multiplayer_connected;
+		bool multiplayer_listening_for_client;
+		bool multiplayer_connecting;
+		bool multiplayer_amiserver;
+		bool multiplayer_myturn;
+
+		// MP variables
+		int enemy_mouse[2];
+		int enemy_latest_placement[2];
+
+
+		// TCP for multiplayer
+		sf::TcpListener* listener;
+		sf::TcpSocket* socket;
+		sf::IpAddress* server;
+
 	public:
 		TTT_Instance();
 		void reset();
+
 		bool setGrid(int board_id, int grid_id);
 		char getGrid(int board_id, int grid_id);
 		bool checkGrid(int board_id, int grid_id);
@@ -43,6 +64,18 @@ class TTT_Instance
 		std::vector< std::vector<char> > getMainBoard();
 		char getWinner();
 		bool checkTie();
+
+		// Multiplayer specific
+		void resetMultiplayer();
+		bool isMultiplayer();
+		bool isConnected();
+		bool isConnecting();
+		bool connect(string ip_address);
+		bool listenForClient();
+		bool connectToServer(string ip_address);
+
+		bool sendGridPlacementRequest(int board_id, int grid_id);
+		void waitForNextMove();
 };
 
 #endif

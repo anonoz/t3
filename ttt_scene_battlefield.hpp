@@ -30,7 +30,6 @@ class SceneBattlefield
 		sf::Event* event;
 		std::vector< sf::Font* >* ttt_fonts;
 
-		// Instance initiation
 		TTT_Instance* instance;
 
 		// Visual Elements
@@ -74,7 +73,7 @@ class SceneBattlefield
 			loser_sound;
 
 	public:
-		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
+		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance);
 		void render();
 		int handle(sf::Event* xevent);
 		int handle_mouse_click(int click_X, int click_y);

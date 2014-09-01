@@ -32,7 +32,8 @@ class SceneMenu
 		sf::Text heading1;
 		
 		sf::RectangleShape mini_board
-			, start_button;
+			, start_button
+			, multiplayer_button;
 
 	public:
 		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);

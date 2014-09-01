@@ -7,18 +7,21 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 
-#ifndef SCENE_DIRECTOR_HPP
-#define SCENE_DIRECTOR_HPP
-
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <cstdlib>
 
+#include "ttt_instance.hpp"
 #include "ttt_scene_menu.hpp"
 #include "ttt_scene_battlefield.hpp"
+#include "ttt_scene_multiplayer.hpp"
 
+using namespace std;
+
+#ifndef SCENE_DIRECTOR_HPP
+#define SCENE_DIRECTOR_HPP
 class SceneDirector
 {
 	private:
@@ -27,8 +30,11 @@ class SceneDirector
 		sf::Event* event;
 		std::vector< sf::Font* > ttt_fonts;
 
+		TTT_Instance* instance;
+
 		SceneMenu*		scene_menu;
 		SceneBattlefield* scene_battlefield;
+		SceneMultiplayer* scene_multiplayer;
 
 	public:
 		SceneDirector(sf::RenderWindow* xwindow);

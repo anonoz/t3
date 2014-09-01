@@ -60,10 +60,25 @@ bool TTT_Instance::setGrid(int board_id, int grid_id)
 	// Check if someone placed there before
 	if (checkGrid(board_id, grid_id))
 	{
-		main_board[ current_board_id ][ grid_id ] = current_player;
+		// Multiplayer procedure: send the setGrid request to other player
+		//   and double check whether the placement is allowed.
+		if (isMultiplayer())
+		{
+			// Send to other computer
+			if (sendGridPlacementRequest(board_id, grid_id))
+			{
+				main_board[ current_board_id ][ grid_id ] = current_player;
 
-		current_player = (current_player == 'O') ? 'X' : 'O';
-		current_board_id = grid_id;
+				current_player = (current_player == 'O') ? 'X' : 'O';
+				current_board_id = grid_id;
+			}
+			else
+			{
+				std::cout << "Conflicting placement over TCP" << std::endl;
+			};
+
+			waitForNextMove();
+		}
 
 		return true;
 	}
@@ -175,4 +190,201 @@ bool TTT_Instance::checkTie()
 	}
 
 	return true;
+}
+
+// Multiplayer functions
+void TTT_Instance::resetMultiplayer()
+{
+	multiplayer_port = 50001;
+
+	multiplayer_mode = true;
+	multiplayer_connected = false;
+	multiplayer_listening_for_client = false;
+}
+
+bool TTT_Instance::isMultiplayer()
+{
+	return multiplayer_mode;
+}
+
+bool TTT_Instance::isConnected()
+{
+	return multiplayer_connected;
+}
+
+bool TTT_Instance::isConnecting()
+{
+	return multiplayer_connecting;
+}
+
+bool TTT_Instance::connect(string ip_address)
+{
+	socket = new sf::TcpSocket;
+
+	multiplayer_connecting = true;
+	multiplayer_amiserver = ip_address.length() == 0;
+
+	// Try socket connection
+	bool connection_successful = (multiplayer_amiserver) ? connectToServer(ip_address) : listenForClient();
+	if(connection_successful)
+	{
+		multiplayer_connecting = false;
+		multiplayer_connected = true;
+	}
+	else
+	{
+		delete socket;
+		multiplayer_connecting = false;
+		return false;
+	}
+
+	// If connection succeeds, start by letting server decide
+	//   first board, then send first board notice to client.
+	if (multiplayer_amiserver)
+	{
+		reset();
+
+		// Tell client what board we are on now!
+		int message[3] = {0, current_board_id, 0};
+		
+		if (socket->send(message, sizeof(message)) == sf::Socket::Done)
+		{
+			multiplayer_myturn = true;
+		}
+	}
+	// If I am client, get the current active board
+	else {
+
+		// Eh server bro, where do we first start ah...
+		int message[3];
+		std::size_t received;
+		if (socket->receive(message, sizeof(message), received) == sf::Socket::Done)
+		{
+			if (message[0] == 0) // initiation message
+			{
+				current_board_id = message[1];
+			}
+		}
+
+		multiplayer_myturn = false;
+		waitForNextMove();
+	}
+
+	return true;
+}
+
+// Server specific
+bool TTT_Instance::listenForClient()
+{
+	listener = new sf::TcpListener;
+	listener->listen(multiplayer_port);
+
+	std::cout << "Listening for client on port " << multiplayer_port << std::endl;
+	int listen_status = listener->accept(*socket);
+
+	if (listen_status == sf::Socket::Done)
+	{
+		std::cout << "Got a client... " << std::endl;
+		return true;
+	}
+	else
+	{
+		std::cout << "No client today... " << std::endl;
+		return false;
+	}
+}
+
+// Client specific
+bool TTT_Instance::connectToServer(string ip_address)
+{
+	server = new sf::IpAddress(ip_address);
+
+	std::cout << "Connecting to server " << server->toString() << std::endl;
+
+	int connect_status = socket->connect(*server, multiplayer_port);
+	std::cout << connect_status << std::endl;
+
+	if (connect_status == sf::Socket::Done)
+	{
+		std::cout << "Connected to server" << std::endl;
+		return true;
+	}
+	else
+	{
+		std::cout << "Failed to connect to server" << std::endl;
+		return false;
+	}
+}
+
+// Actual gaming functions in multiplayer
+bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
+{
+	int message[3] = {2, board_id, grid_id};
+	int socket_send_result = socket->send(message, sizeof(message));
+
+	if (socket_send_result == sf::Socket::Done)
+	{
+		int received_message[3];
+		std::size_t received;
+		if (socket->receive(received_message, sizeof(received_message), received) != sf::Socket::Done)
+		{
+			if (received_message[0] == 3)
+			{
+				if (received_message[1] > -1 && received_message[2] > -1)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	else if (socket_send_result == sf::Socket::Disconnected)
+	{
+		multiplayer_connected = false;
+	}
+}
+
+void TTT_Instance::waitForNextMove()
+{
+	int message[3] = {};
+	std::size_t received;
+
+	int socket_receive_status;
+
+	while (!multiplayer_myturn)
+	{
+		socket_receive_status = socket->receive(message, sizeof(message), received);
+
+		if (socket_receive_status == sf::Socket::Done)
+		{
+
+			if (message[0] == 1)
+			{
+				// Enemy moved their mouse!
+			}
+			else if (message[0] == 2)
+			{
+				int reply_message[3] = {};
+				// Enemy requested for placement!
+				if (checkGrid(message[1], message[2]))
+				{
+					// Approve
+					reply_message = {3, message[1], message[2]};
+
+					// Sync to our database as well
+					main_board[ message[1] ][ message[2] ] = (multiplayer_amiserver) ? 'O' : 'X';
+
+					multiplayer_myturn = true;
+				}
+				else
+				{
+					// No thats not legal
+					reply_message = {3, -1, -1};
+				}
+
+				socket->send(reply_message, sizeof(reply_message));
+				break;
+			}
+		}
+		
+	}
 }

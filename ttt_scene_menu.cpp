@@ -34,6 +34,13 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	start_button.setSize(sf::Vector2f(start_button_texture_size.x, start_button_texture_size.y));
 	start_button.setPosition((window_size_v2f.x / 2) - (start_button_texture_size.x / 2), (window_size_v2f.y / 2) - (start_button_texture_size.y / 2) + 140);
 
+	sf::Texture* multiplayer_button_texture = TTTHelpers::load_texture("assets/images/menu-multiplayer-button.png");
+	sf::Vector2u multiplayer_button_texture_size = multiplayer_button_texture->getSize();
+
+	multiplayer_button.setTexture(multiplayer_button_texture);
+	multiplayer_button.setSize(sf::Vector2f(multiplayer_button_texture_size.x, multiplayer_button_texture_size.y));
+	multiplayer_button.setPosition((window_size_v2f.x / 2) - (multiplayer_button_texture_size.x / 2), (window_size_v2f.y / 2) - (multiplayer_button_texture_size.y / 2) + 240);
+
 	// Prepare the mini board
 	// sf::Texture* mini_board = TTTHelpers::load_texture("assets/images/mini-board.png");
 	sf::Texture* mini_board_texture = TTTHelpers::load_texture("assets/images/mini-board.png");
@@ -57,7 +64,8 @@ void SceneMenu::render()
 	// Draw start
 	window->draw(start_button);
 
-	// Draw about
+	// Draw multi
+	window->draw(multiplayer_button);
 
 	// Draw the pale ttt board
 	window->draw(mini_board);
@@ -87,8 +95,13 @@ int SceneMenu::handle_mouse_click(int click_x, int click_y)
 	// Start button check
 	if (start_button.getGlobalBounds().contains(click_x, click_y))
 	{
-		std::cout << "OMG START BUTTON IS CLICKED!!!" << std::endl;
 		return 1;
+	}
+
+	// Multiplayer
+	if (multiplayer_button.getGlobalBounds().contains(click_x, click_y))
+	{
+		return 2;
 	}
 
 	return 0;

@@ -9,6 +9,7 @@ Tutorial Section: TC201
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <time.h>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -71,6 +72,17 @@ class SceneBattlefield
 			winner_sound,
 			tie_sound,
 			loser_sound;
+
+		// Calculation aids
+		static const float TOP_LEFT_X,
+			TOP_LEFT_Y;
+
+		static const int DELTA_BOARD_X,
+			DELTA_BOARD_Y,
+			TOP_LEFT_GRID_X,
+			TOP_LEFT_GRID_Y,
+			DELTA_GRID_X,
+			DELTA_GRID_Y;
 
 	public:
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance);

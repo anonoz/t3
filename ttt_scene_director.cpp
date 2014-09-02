@@ -69,7 +69,12 @@ void SceneDirector::setCurrentScene(int target_current_scene)
 		return;
 
 	// Some scenes would like to be... entered
-	if (target_current_scene == 2) scene_multiplayer->enter();
+	if (target_current_scene == 2 && getCurrentScene() != target_current_scene)
+		scene_multiplayer->enter();
+
+	// Leave multiplayer prompt page is user is going to menu not battlefield
+	if (getCurrentScene() == 2 && target_current_scene == 0)
+		scene_multiplayer->leave();
 
 	current_scene = target_current_scene;
 	return;

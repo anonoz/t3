@@ -9,6 +9,21 @@ Tutorial Section: TC201
 
 #include "ttt_scene_battlefield.hpp"
 
+// Calculation aids
+// Board level
+const float SceneBattlefield::TOP_LEFT_X = 147;
+const float SceneBattlefield::TOP_LEFT_Y = 37;
+
+const int SceneBattlefield::DELTA_BOARD_X = 173;
+const int SceneBattlefield::DELTA_BOARD_Y = 183;
+
+// Grid level
+const int SceneBattlefield::TOP_LEFT_GRID_X = 25;
+const int SceneBattlefield::TOP_LEFT_GRID_Y = 25;
+
+const int SceneBattlefield::DELTA_GRID_X = 50;
+const int SceneBattlefield::DELTA_GRID_Y = 50;
+
 SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance)
 {
 	window = xwindow;
@@ -198,7 +213,6 @@ int SceneBattlefield::handle(sf::Event* xevent)
 			if (instance->getCurrentPlayer() == 'X')
 			{
 				mouse_cursor.setTexture(x_marker_inactive_texture);
-				std::cout << "X inactive" << std::endl;
 			}
 			else
 			{
@@ -222,6 +236,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 			{
 				bool placement_successful = instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
 
+				srand(time(NULL));
 				int which_sound_to_play = rand() % 1;
 				if (placement_successful && which_sound_to_play)
 				{
@@ -272,25 +287,29 @@ void SceneBattlefield::render()
 
 	// Draw active halo
 	sf::Vector2f halo_coordinates = getBoardHaloCoorginates( instance->getCurrentBoardId() );
-	if (instance->getCurrentPlayer() == 'X')
-	{
-		x_active_halo.setPosition(halo_coordinates);
-		window->draw( x_active_halo );
-	}
-	else if (instance->getCurrentPlayer() == 'O')
-	{
-		o_active_halo.setPosition(halo_coordinates);
-		window->draw( o_active_halo );
-	}
 
-	// Draw hint halo
-	if (instance->getCurrentPlayer() == 'X')
+	if ((instance->isMultiplayer() && instance->isItMyTurn()) || !instance->isMultiplayer())
 	{
-		window->draw(o_hint_halo);
-	}
-	else
-	{
-		window->draw(x_hint_halo);
+		if (instance->getCurrentPlayer() == 'X')
+		{
+			x_active_halo.setPosition(halo_coordinates);
+			window->draw( x_active_halo );
+		}
+		else if (instance->getCurrentPlayer() == 'O')
+		{
+			o_active_halo.setPosition(halo_coordinates);
+			window->draw( o_active_halo );
+		}
+
+		// Draw hint halo
+		if (instance->getCurrentPlayer() == 'X')
+		{
+			window->draw(o_hint_halo);
+		}
+		else
+		{
+			window->draw(x_hint_halo);
+		}
 	}
 
 	// Draw exising markers
@@ -340,7 +359,7 @@ void SceneBattlefield::render()
 	// If got winner draw play again button too
 
 	// Draw cursors
-	if (instance->getWinner() == ' ')
+	if ((!instance->isMultiplayer() && instance->getWinner() == ' ') || (instance->isMultiplayer() && instance->isItMyTurn()))
 	{
 		window->setMouseCursorVisible(false);
 		window->draw(mouse_cursor);
@@ -355,36 +374,23 @@ void SceneBattlefield::render()
 sf::Vector2f SceneBattlefield::getGridCoordinates(int board_id, int grid_id)
 {
 	// sf::Vector2u coordinates;
-
-	// Board level
-	float top_left_x = 147;
-	float top_left_y = 37;
-
-	int delta_board_x = 173;
-	int delta_board_y = 183;
-
-	// Grid level
-	int top_left_grid_x = 25;
-	int top_left_grid_y = 25;
-
-	int delta_grid_x = 50;
-	int delta_grid_y = 50;
+	float top_left_x = TOP_LEFT_X, top_left_y = TOP_LEFT_Y;
 
 	// Calculate X at board level (translation of coords inside battlefield)
-	if (board_id % 3 > 0) top_left_x += delta_board_x;
-	if (board_id % 3 > 1) top_left_x += delta_board_x;
+	if (board_id % 3 > 0) top_left_x += DELTA_BOARD_X;
+	if (board_id % 3 > 1) top_left_x += DELTA_BOARD_X;
 
 	// Board Y at board level
-	if (board_id >= 3) top_left_y += delta_board_y;
-	if (board_id >= 6) top_left_y += delta_board_y;
+	if (board_id >= 3) top_left_y += DELTA_BOARD_Y;
+	if (board_id >= 6) top_left_y += DELTA_BOARD_Y;
 
 	// X at grid level (translation of coords inside a board)
-	if (grid_id % 3 > 0) top_left_x += delta_grid_x;
-	if (grid_id % 3 > 1) top_left_x += delta_grid_x;
+	if (grid_id % 3 > 0) top_left_x += DELTA_GRID_X;
+	if (grid_id % 3 > 1) top_left_x += DELTA_GRID_X;
 
 	// Y at grid level
-	if (grid_id >= 3) top_left_y += delta_grid_y;
-	if (grid_id >= 6) top_left_y += delta_grid_y;
+	if (grid_id >= 3) top_left_y += DELTA_GRID_Y;
+	if (grid_id >= 6) top_left_y += DELTA_GRID_Y;
 
 	return sf::Vector2f(top_left_x, top_left_y);
 }
@@ -402,24 +408,20 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 {
 	int hit_x = mouse_coords.x, hit_y = mouse_coords.y;
 
-	int top_left_x = 147, top_left_y = 37;
-	int delta_board_x = 173, delta_board_y = 183;
-	int delta_grid_x = 50, delta_grid_y = 50;
-
 	std::vector<int> board_grid(2, -1);
 
 	// Column 1 board
-	if (hit_x >= top_left_x && hit_x <= top_left_x + 3 * delta_grid_x)
+	if (hit_x >= TOP_LEFT_X && hit_x <= TOP_LEFT_X + 3 * DELTA_GRID_X)
 	{
 		board_grid[0] = 0;
 	}
 	// Column 2 board
-	else if (hit_x >= top_left_x + delta_board_x && hit_x <= top_left_x + delta_board_x + 3 * delta_grid_x)
+	else if (hit_x >= TOP_LEFT_X + DELTA_BOARD_X && hit_x <= TOP_LEFT_X + DELTA_BOARD_X + 3 * DELTA_GRID_X)
 	{
 		board_grid[0] = 1;
 	}
 	// Column 3 board
-	else if (hit_x >= top_left_x + 2 * delta_board_x && hit_x <= top_left_x + 2 * delta_board_x + 3 * delta_grid_x ) {
+	else if (hit_x >= TOP_LEFT_X + 2 * DELTA_BOARD_X && hit_x <= TOP_LEFT_X + 2 * DELTA_BOARD_X + 3 * DELTA_GRID_X ) {
 		board_grid[0] = 2;
 	}
 	// Oops, out of board!
@@ -431,17 +433,17 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 	}
 
 	// Row 1 board
-	if (hit_y >= top_left_y && hit_y <= top_left_y + 3 * delta_grid_y)
+	if (hit_y >= TOP_LEFT_Y && hit_y <= TOP_LEFT_Y + 3 * DELTA_GRID_Y)
 	{
 		// board_grid[0] = 0;
 	}
 	// Row 2 board
-	else if (hit_y >= top_left_y + delta_board_y && hit_y <= top_left_y + delta_board_y + 3 * delta_grid_y)
+	else if (hit_y >= TOP_LEFT_Y + DELTA_BOARD_Y && hit_y <= TOP_LEFT_Y + DELTA_BOARD_Y + 3 * DELTA_GRID_Y)
 	{
 		board_grid[0] += 3;
 	}
 	// Row 3 board
-	else if (hit_y >= top_left_y + 2 * delta_board_y && hit_y <= top_left_y + 2 * delta_board_y + 3 * delta_grid_y ) {
+	else if (hit_y >= TOP_LEFT_Y + 2 * DELTA_BOARD_Y && hit_y <= TOP_LEFT_Y + 2 * DELTA_BOARD_Y + 3 * DELTA_GRID_Y ) {
 		board_grid[0] += 6;
 	}
 	// Oops, out of board!
@@ -454,24 +456,24 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 
 	// Before we calculate grid, we minus off the hit coords
 
-	if (board_grid[0] % 3 == 0) hit_x -= top_left_x;
-	if (board_grid[0] % 3 == 1) hit_x -= top_left_x + delta_board_x;
-	if (board_grid[0] % 3 == 2) hit_x -= top_left_x + 2 * delta_board_x;
+	if (board_grid[0] % 3 == 0) hit_x -= TOP_LEFT_X;
+	if (board_grid[0] % 3 == 1) hit_x -= TOP_LEFT_X + DELTA_BOARD_X;
+	if (board_grid[0] % 3 == 2) hit_x -= TOP_LEFT_X + 2 * DELTA_BOARD_X;
 
-	if (board_grid[0] / 3 == 0) hit_y -= top_left_y;
-	if (board_grid[0] / 3 == 1) hit_y -= top_left_y + delta_board_y;
-	if (board_grid[0] / 3 == 2) hit_y -= top_left_y + 2 * delta_board_y;
+	if (board_grid[0] / 3 == 0) hit_y -= TOP_LEFT_Y;
+	if (board_grid[0] / 3 == 1) hit_y -= TOP_LEFT_Y + DELTA_BOARD_Y;
+	if (board_grid[0] / 3 == 2) hit_y -= TOP_LEFT_Y + 2 * DELTA_BOARD_Y;
 
 	// Calculate grid now
-	if (hit_x <= delta_grid_x)
+	if (hit_x <= DELTA_GRID_X)
 	{
 		board_grid[1] = 0;
 	}
-	else if (hit_x > 1 * delta_grid_x && hit_x <= 2 * delta_grid_x)
+	else if (hit_x > 1 * DELTA_GRID_X && hit_x <= 2 * DELTA_GRID_X)
 	{
 		board_grid[1] = 1;
 	}
-	else if (hit_x > 2 * delta_grid_x && hit_x <= 3 * delta_grid_x)
+	else if (hit_x > 2 * DELTA_GRID_X && hit_x <= 3 * DELTA_GRID_X)
 	{
 		board_grid[1] = 2;
 	}
@@ -481,15 +483,15 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 	}
 
 	// grid Y
-	if (hit_y <= delta_grid_y)
+	if (hit_y <= DELTA_GRID_Y)
 	{
 		// board_grid[1] += 0;
 	}
-	else if (hit_y > 1 * delta_grid_y && hit_y <= 2 * delta_grid_y)
+	else if (hit_y > 1 * DELTA_GRID_Y && hit_y <= 2 * DELTA_GRID_Y)
 	{
 		board_grid[1] += 3;
 	}
-	else if (hit_y > 2 * delta_grid_y && hit_y <= 3 * delta_grid_y)
+	else if (hit_y > 2 * DELTA_GRID_Y && hit_y <= 3 * DELTA_GRID_Y)
 	{
 		board_grid[1] += 6;
 	}
@@ -497,8 +499,6 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 	{
 		board_grid[1] = -1;
 	}
-
-	std::cout << "TARGETING: " << board_grid[0] << " " << board_grid[1] << std::endl;
 
 	return board_grid;
 }

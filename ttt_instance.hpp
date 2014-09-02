@@ -8,6 +8,7 @@ Tutorial Section: TC201
 ********************************************/
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/System.hpp>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -36,11 +37,12 @@ class TTT_Instance
 		bool multiplayer_connected;
 		bool multiplayer_listening_for_client;
 		bool multiplayer_connecting;
+		bool multiplayer_connection_failed;
 		bool multiplayer_amiserver;
 		bool multiplayer_myturn;
 
 		// MP variables
-		int enemy_mouse[2];
+		int enemy_mouse_position[2];
 		int enemy_latest_placement[2];
 
 
@@ -49,8 +51,14 @@ class TTT_Instance
 		sf::TcpSocket* socket;
 		sf::IpAddress* server;
 
+		// OMG some advanced shit here
+		sf::Thread* listenForClient_thread;
+		sf::Thread* connectToServer_thread;
+		sf::Thread* waitForNextMove_thread;
+
 	public:
 		TTT_Instance();
+
 		void reset();
 
 		bool setGrid(int board_id, int grid_id);
@@ -67,15 +75,34 @@ class TTT_Instance
 
 		// Multiplayer specific
 		void resetMultiplayer();
+		void quitMultiplayer();
+
 		bool isMultiplayer();
 		bool isConnected();
 		bool isConnecting();
+		bool isItMyTurn();
+		char whoAmI();
+		bool didConnectionFail();
+
 		bool connect(string ip_address);
-		bool listenForClient();
-		bool connectToServer(string ip_address);
+
+		void listenForClient();
+		void startListeningForClient();
+		void stopListeningForClient();
+
+		void connectToServer();
+		void startConnectingToServer(string ip_address);
+
+		void onConnectingSuccess();
+		void onConnectingFailure();
 
 		bool sendGridPlacementRequest(int board_id, int grid_id);
+
 		void waitForNextMove();
+		void startWaitingForNextMove();
+		void stopWaitingForNextMove();
+
+		int sendPacket(int, int, int);
 };
 
 #endif

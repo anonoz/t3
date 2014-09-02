@@ -88,7 +88,7 @@ SceneMultiplayer::SceneMultiplayer(sf::RenderWindow* xwindow, vector<sf::Font*>*
 	give_friend_your_ip.setStyle(sf::Text::Regular);
 	give_friend_your_ip.setCharacterSize(19);
 	give_friend_your_ip.setPosition((window_size_v2f.x / 2), (window_size_v2f.x / 2) - 40 );
-	TTTHelpers::set_text_string(give_friend_your_ip, "OR GIVE YOUR FRIEND YOURS & CLICK CONNECT", "CT");
+	TTTHelpers::set_text_string(give_friend_your_ip, "OR GIVE YOUR FRIEND YOURS & GAME WILL START", "CT");
 
 	// Your IP Address
 	your_ip_address.setFont(*((*ttt_fonts)[0]));
@@ -107,6 +107,14 @@ SceneMultiplayer::SceneMultiplayer(sf::RenderWindow* xwindow, vector<sf::Font*>*
 	connect_button.setPosition( (window_size_v2f.x / 2) - (connect_button_texture_size.x / 2), (window_size_v2f.y / 2) - (connect_button_texture_size.y / 2) + 150 );
 	connect_button.setTextureRect( sf::IntRect(0, 0, connect_button_texture_size.x, connect_button_texture_size.y) );
 
+	sf::Texture* connect_button_inactive_texture = TTTHelpers::load_texture("assets/images/connect-button-inactive.png");
+	sf::Vector2u connect_button_inactive_texture_size = connect_button_inactive_texture->getSize();
+
+	connect_button_inactive.setTexture(connect_button_inactive_texture);
+	connect_button_inactive.setSize( sf::Vector2f(connect_button_inactive_texture_size.x, connect_button_inactive_texture_size.y) );
+	connect_button_inactive.setPosition( (window_size_v2f.x / 2) - (connect_button_inactive_texture_size.x / 2), (window_size_v2f.y / 2) - (connect_button_inactive_texture_size.y / 2) + 150 );
+	connect_button_inactive.setTextureRect( sf::IntRect(0, 0, connect_button_inactive_texture_size.x, connect_button_inactive_texture_size.y) );
+
 	// Subscene 1: Waiting for your friend...
 	s1_waiting.setFont(*((*ttt_fonts)[4]));
 	s1_waiting.setColor(sf::Color::White);
@@ -119,12 +127,16 @@ SceneMultiplayer::SceneMultiplayer(sf::RenderWindow* xwindow, vector<sf::Font*>*
 
 void SceneMultiplayer::enter()
 {
+	subscene = 0;
 	instance->resetMultiplayer();
+	instance->startListeningForClient();
 }
 
 void SceneMultiplayer::leave()
 {
-
+	std::cout << "Leaving multiplayer prompt page.. " << std::endl;
+	instance->stopListeningForClient();
+	instance->quitMultiplayer();
 }
 
 void SceneMultiplayer::render()
@@ -134,7 +146,7 @@ void SceneMultiplayer::render()
 	window->draw(heading1);
 	window->draw(x_button);
 
-	if (subscene == 1)
+	if (instance->isConnecting())
 	{
 		window->draw(s1_waiting);
 	}
@@ -149,7 +161,11 @@ void SceneMultiplayer::render()
 		window->draw(dotted_line);
 		window->draw(give_friend_your_ip);
 		window->draw(your_ip_address);
-		window->draw(connect_button);
+
+		if (user_input_ip_address.length() > 0)
+			window->draw(connect_button);
+		else
+			window->draw(connect_button_inactive);
 	}
 }
 
@@ -190,18 +206,12 @@ int SceneMultiplayer::handle_mouse_click(int click_x, int click_y)
 	{
 		return 0; // Menu
 	}
-	else if (connect_button.getGlobalBounds().contains(click_x, click_y))
+	else if (user_input_ip_address.length() > 0 && connect_button.getGlobalBounds().contains(click_x, click_y))
 	{
-		subscene = 1;
-		
-		if (instance->connect(user_input_ip_address))
-		{
+		instance->connect(user_input_ip_address);
+
+		if (instance->isConnected())
 			return 1;
-		}
-		else
-		{
-			subscene = 0;
-		};
 	}
 
 	return 2;

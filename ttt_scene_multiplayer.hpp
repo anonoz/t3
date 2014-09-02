@@ -44,6 +44,7 @@ class SceneMultiplayer
 			blue_mat,
 			dotted_line,
 			connect_button,
+			connect_button_inactive,
 			x_button;
 
 		sf::Text heading1,

@@ -130,6 +130,9 @@ int TTT_Instance::getCurrentBoardId()
 // For each board, check if O and X took down either of the 3 verticals, 3 horizontals or the 2 diagonals.
 char TTT_Instance::getWinner()
 {
+	bool original_mode = multiplayer_mode;
+	multiplayer_mode = false;
+
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
 		vector< char > board = main_board[ board_id ];
@@ -178,6 +181,7 @@ char TTT_Instance::getWinner()
 		}
 	}
 
+	multiplayer_mode = original_mode;
 	return ' ';
 }
 
@@ -294,6 +298,7 @@ void TTT_Instance::listenForClient()
 		if (listen_status != sf::Socket::Done)
 			onConnectingFailure();
 		else
+			multiplayer_amiserver = true;
 			onConnectingSuccess();
 
 		return;
@@ -396,9 +401,9 @@ void TTT_Instance::onConnectingSuccess()
 
 		current_player = 'X';
 		multiplayer_myturn = false;
+		startWaitingForNextMove();
 	}
 
-	startWaitingForNextMove();
 	return;
 }
 
@@ -414,7 +419,7 @@ void TTT_Instance::onConnectingFailure()
 
 bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 {
-	stopWaitingForNextMove();
+	// stopWaitingForNextMove();
 
 	int socket_send_result = sendPacket(2, board_id, grid_id);
 	std::cout << "Sending grid placement request" << std::endl;
@@ -424,7 +429,9 @@ bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 		sf::Packet receiving_packet;
 		int message_type, input_x, input_y;
 
-		if (socket->receive(receiving_packet) == sf::Socket::Done)
+		int retrieval_status = socket->receive(receiving_packet);
+
+		if (retrieval_status == sf::Socket::Done)
 		{
 			std::cout << "Received approval message" << std::endl;
 			receiving_packet >> message_type >> input_x >> input_y;
@@ -436,18 +443,27 @@ bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 					startWaitingForNextMove();
 					return true;
 				}
+				else
+				{
+					return false;
+				}
 			}
 		}
+		else
+		{
+			std::cout << "Something wronng when getting approval: " << retrieval_status << std::endl;
+			return false;
+		}
 	}
-	else if (socket_send_result == sf::Socket::Disconnected)
+	else
 	{
-		multiplayer_connected = false;
+		std::cout << "Request sending error: " << socket_send_result << std::endl;
 	}
 }
 
 void TTT_Instance::waitForNextMove()
 {
-	std::cout << "Waiting for next move" << std::endl;
+	std::cout << "Waiting for next move... " << std::endl;
 	while (true)
 	{
 		sf::Packet receiving_packet;
@@ -460,10 +476,11 @@ void TTT_Instance::waitForNextMove()
 		int message_type, input_x, input_y;
 
 		receiving_packet >> message_type >> input_x >> input_y;
-		std::cout << "Packet content: " << message_type << input_x << input_y << std::endl;
 
 		if (socket_receive_status == sf::Socket::Done)
 		{
+
+			std::cout << "Packet content: " << message_type << input_x << input_y << std::endl;
 
 			if (message_type == 1)
 			{
@@ -473,7 +490,7 @@ void TTT_Instance::waitForNextMove()
 			}
 			else if (message_type == 2)
 			{
-				// Enemy requested for placement!
+				std::cout << "Enemy requested for placement!" << std::endl;
 				if (checkGrid(input_x, input_y))
 				{
 					// Approve
@@ -489,6 +506,8 @@ void TTT_Instance::waitForNextMove()
 					current_player = (multiplayer_amiserver) ? 'X' : 'O';
 					multiplayer_myturn = true;
 
+					stopWaitingForNextMove();
+
 				}
 				else
 				{
@@ -496,6 +515,15 @@ void TTT_Instance::waitForNextMove()
 					sendPacket(3, -1, -1);
 				}
 			}
+			else if (message_type == 3)
+			{
+				main_board[ input_x ][ input_y ] = (multiplayer_amiserver) ? 'X' : 'O';
+				std::cout << "This shouldnt be called" << std::endl;
+			}
+		}
+		else
+		{
+			return;
 		}
 	}
 }

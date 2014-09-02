@@ -173,7 +173,7 @@ int SceneMultiplayer::handle(sf::Event* xevent)
 {
 	event = xevent;
 
-	// Checking instance
+	// Checking instance, and go to battlefield when connected
 	if (instance->isConnected())
 	{
 		return 1;

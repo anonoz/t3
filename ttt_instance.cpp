@@ -21,6 +21,17 @@ Tutorial Section: TC201
 
 TTT_Instance::TTT_Instance()
 {
+	// Initiate all the flags, even if they are unused
+	multiplayer_port = 50001;
+	multiplayer_mode = false;
+	multiplayer_connected = false;
+	multiplayer_listening_for_client = false;
+	multiplayer_connecting = false;
+	multiplayer_connection_failed = false;
+	multiplayer_amiserver = false;
+	multiplayer_myturn = false;
+	multiplayer_loserbetold = false;
+
 	reset();
 }
 

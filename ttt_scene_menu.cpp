@@ -18,38 +18,66 @@ SceneMenu::SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fon
 	// Calculating middle of the screen from RenderWindow size to fit ttt board
 	sf::Vector2f window_size_v2f(window->getSize());
 
+	// Create the battlefield background
+	sf::Texture* battle_board_texture = TTTHelpers::load_texture("assets/images/battle-board.png");
+	sf::Vector2u battle_board_texture_size = battle_board_texture->getSize();
+
+	battle_board.setTexture(battle_board_texture);
+	battle_board.setSize( sf::Vector2f(battle_board_texture_size.x, battle_board_texture_size.y) );
+	battle_board.setPosition( (window_size_v2f.x / 2) - (battle_board_texture_size.x / 2), (window_size_v2f.y / 2) - (battle_board_texture_size.y / 2) );
+	battle_board.setTextureRect( sf::IntRect(0, 0, battle_board_texture_size.x, battle_board_texture_size.y) );
+
+	// Create big black mat
+	sf::Texture* black_mat_texture = TTTHelpers::load_texture("assets/images/black-mat.png");
+	sf::Vector2u black_mat_texture_size = black_mat_texture->getSize();
+
+	black_mat.setTexture(black_mat_texture);
+	black_mat.setSize( sf::Vector2f(black_mat_texture_size.x, black_mat_texture_size.y) );
+	black_mat.setPosition( (window_size_v2f.x / 2) - (black_mat_texture_size.x / 2), (window_size_v2f.y / 2) - (black_mat_texture_size.y / 2) );
+	black_mat.setTextureRect( sf::IntRect(0, 0, black_mat_texture_size.x, black_mat_texture_size.y) );
+
 	// Prepare texts
-	heading1.setFont(*((*ttt_fonts)[2])); std::cout<<"set font"<<std::endl;
-	heading1.setColor(sf::Color::Black);
+	heading1.setFont(*((*ttt_fonts)[4]));
+	heading1.setColor(sf::Color::White);
 	heading1.setStyle(sf::Text::Regular);
-	heading1.setCharacterSize(62); std::cout<<"set char size"<<std::endl;
-	heading1.setPosition(186, 78); std::cout<<"set position"<<std::endl;
-	TTTHelpers::set_text_string(heading1, "TAC TIC TOE"); std::cout<<"set string cfg"<<std::endl;
+	heading1.setCharacterSize(80); 
+	heading1.setPosition((window_size_v2f.x / 2), (window_size_v2f.y / 2) - 170); 
+	TTTHelpers::set_text_string(heading1, "TAC TIC TOE", "CT"); 
+
+	tagline.setFont(*((*ttt_fonts)[3]));
+	tagline.setColor(sf::Color::White);
+	tagline.setStyle(sf::Text::Regular);
+	tagline.setCharacterSize(19);
+	tagline.setPosition((window_size_v2f.x / 2), (window_size_v2f.y / 2) - 70);
+	TTTHelpers::set_text_string(tagline, "BECAUSE TIC TAC TOE IS TOO MAINSTREAM", "CT");
+
+	pick_your_battle = tagline;
+	pick_your_battle.setPosition((window_size_v2f.x / 2), (window_size_v2f.y / 2) + 50);
+	TTTHelpers::set_text_string(pick_your_battle, "PICK YOUR BATTLE", "CT");
 
 	// Shiny new start button
-	sf::Texture* start_button_texture = TTTHelpers::load_texture("assets/images/start-button.png");
-	sf::Vector2u start_button_texture_size = start_button_texture->getSize();
+	sf::Texture* single_button_texture = TTTHelpers::load_texture("assets/images/single-button.png");
+	sf::Vector2u single_button_texture_size = single_button_texture->getSize();
 
-	start_button.setTexture(start_button_texture);
-	start_button.setSize(sf::Vector2f(start_button_texture_size.x, start_button_texture_size.y));
-	start_button.setPosition((window_size_v2f.x / 2) - (start_button_texture_size.x / 2), (window_size_v2f.y / 2) - (start_button_texture_size.y / 2) + 140);
+	single_button.setTexture(single_button_texture);
+	single_button.setSize(sf::Vector2f(single_button_texture_size.x, single_button_texture_size.y));
+	single_button.setPosition((window_size_v2f.x / 2) - (single_button_texture_size.x / 2) - 200, (window_size_v2f.y / 2) - (single_button_texture_size.y / 2) + 140);
 
-	sf::Texture* multiplayer_button_texture = TTTHelpers::load_texture("assets/images/menu-multiplayer-button.png");
-	sf::Vector2u multiplayer_button_texture_size = multiplayer_button_texture->getSize();
+	sf::Texture* lan_button_texture = TTTHelpers::load_texture("assets/images/lan-button.png");
+	sf::Vector2u lan_button_texture_size = lan_button_texture->getSize();
 
-	multiplayer_button.setTexture(multiplayer_button_texture);
-	multiplayer_button.setSize(sf::Vector2f(multiplayer_button_texture_size.x, multiplayer_button_texture_size.y));
-	multiplayer_button.setPosition((window_size_v2f.x / 2) - (multiplayer_button_texture_size.x / 2), (window_size_v2f.y / 2) - (multiplayer_button_texture_size.y / 2) + 240);
+	lan_button.setTexture(lan_button_texture);
+	lan_button.setSize(sf::Vector2f(lan_button_texture_size.x, lan_button_texture_size.y));
+	lan_button.setPosition((window_size_v2f.x / 2) - (lan_button_texture_size.x / 2) + 200, (window_size_v2f.y / 2) - (lan_button_texture_size.y / 2) + 140);
 
-	// Prepare the mini board
-	// sf::Texture* mini_board = TTTHelpers::load_texture("assets/images/mini-board.png");
-	sf::Texture* mini_board_texture = TTTHelpers::load_texture("assets/images/mini-board.png");
-	sf::Vector2u mini_board_texture_size = mini_board_texture->getSize();
+	// Easter help 
+	sf::Texture* help_button_texture = TTTHelpers::load_texture("assets/images/help.png");
+	sf::Vector2u help_button_texture_size = help_button_texture->getSize();
 
-	mini_board.setTexture(mini_board_texture);
-	mini_board.setSize(sf::Vector2f(mini_board_texture_size.x, mini_board_texture_size.y));
-	mini_board.setPosition((window_size_v2f.x / 2) - (mini_board_texture_size.x / 2), (window_size_v2f.y / 2) - (mini_board_texture_size.y / 2));
-	mini_board.setTextureRect( sf::IntRect(0, 0, mini_board_texture->getSize().x, mini_board_texture->getSize().y) );
+	help_button.setTexture(help_button_texture);
+	help_button.setSize( sf::Vector2f(help_button_texture_size.x, help_button_texture_size.y) );
+	help_button.setPosition(764, 105);
+	help_button.setTextureRect( sf::IntRect(0, 0, help_button_texture_size.x, help_button_texture_size.y) );
 
 }
 
@@ -58,17 +86,19 @@ void SceneMenu::render()
 {
 	window->setMouseCursorVisible(true);
 
-	// Draw heading 1
+	// Draw backgrouds
+	window->draw(battle_board);
+	window->draw(black_mat);
+
+	// Draw texts
 	window->draw(heading1);
+	window->draw(tagline);
+	window->draw(pick_your_battle);
 
-	// Draw start
-	window->draw(start_button);
-
-	// Draw multi
-	window->draw(multiplayer_button);
-
-	// Draw the pale ttt board
-	window->draw(mini_board);
+	// Draw buttons
+	window->draw(single_button);
+	window->draw(lan_button);
+	window->draw(help_button);
 }
 
 int SceneMenu::handle(sf::Event* xevent)
@@ -93,15 +123,21 @@ int SceneMenu::handle(sf::Event* xevent)
 int SceneMenu::handle_mouse_click(int click_x, int click_y)
 {
 	// Start button check
-	if (start_button.getGlobalBounds().contains(click_x, click_y))
+	if (single_button.getGlobalBounds().contains(click_x, click_y))
 	{
 		return 1;
 	}
 
 	// Multiplayer
-	if (multiplayer_button.getGlobalBounds().contains(click_x, click_y))
+	if (lan_button.getGlobalBounds().contains(click_x, click_y))
 	{
 		return 2;
+	}
+
+	// Help button
+	if (help_button.getGlobalBounds().contains(click_x, click_y))
+	{
+		system("start http://anonoz.github.io/t3");
 	}
 
 	return 0;

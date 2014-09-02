@@ -29,11 +29,15 @@ class SceneMenu
 		std::vector< sf::Font* >* ttt_fonts;
 
 		// Visual Elements
-		sf::Text heading1;
+		sf::Text heading1,
+			tagline,
+			pick_your_battle;
 		
-		sf::RectangleShape mini_board
-			, start_button
-			, multiplayer_button;
+		sf::RectangleShape battle_board,
+			black_mat,
+			single_button,
+			lan_button,
+			help_button;
 
 	public:
 		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);

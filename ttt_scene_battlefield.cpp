@@ -163,121 +163,179 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	// - Halo hinting for grids
 	if (event->type == sf::Event::MouseMoved)
 	{
-		// Mouse Cursor
-		sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
-
-		sf::Vector2f cursor_position = mouse_position;
-		cursor_position.x = cursor_position.x - mouse_cursor.getSize().x / 2;
-		cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
-		mouse_cursor.setPosition(cursor_position);
-
-		// Hint halos
-		std::vector< int > board_grid_coords = getGridHit( mouse_position );
-
-		if (board_grid_coords[1] > -1 && board_grid_coords[0] == instance->getCurrentBoardId())
-		{
-			sf::Vector2f halo_coordinates = getBoardHaloCoorginates(board_grid_coords[1]);
-
-			if (instance->getCurrentPlayer() == 'X')
-			{
-				o_hint_halo.setPosition(halo_coordinates);
-				x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
-			}
-			else
-			{
-				x_hint_halo.setPosition(halo_coordinates);
-				o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
-			}
-		}
-		else
-		{
-			x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
-			o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
-		}
-
-		// Mouse cursor toggling
-		// - ACTIVE if player is targeting active board & empty grid
-		if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
-		{
-			if (instance->getCurrentPlayer() == 'X')
-			{
-				mouse_cursor.setTexture(x_marker_texture);
-			}
-			else
-			{
-				mouse_cursor.setTexture(o_marker_texture);
-			}
-		}
-		else
-		{
-			if (instance->getCurrentPlayer() == 'X')
-			{
-				mouse_cursor.setTexture(x_marker_inactive_texture);
-			}
-			else
-			{
-				mouse_cursor.setTexture(o_marker_inactive_texture);
-			}
-		}
-		mouse_cursor.setTextureRect( sf::IntRect(0, 0, x_marker_texture->getSize().x, x_marker_texture->getSize().y) );
-		
+		handle_mouse_over();
 	}
 
 	// Things to watch for mouse click:
 	// - Placement of markers
 	if (event->type == sf::Event::MouseButtonPressed)
 	{
-		if (instance->getWinner() == ' ')
-		{
-			std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
+		new_scene = handle_mouse_click();
+	}
 
-			// Do something when its not -1
-			if (board_grid_coords[0] >= 0)
-			{
-				bool placement_successful = instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
-
-				srand(time(NULL));
-				int which_sound_to_play = rand() % 1;
-				if (placement_successful && which_sound_to_play)
-				{
-					placement_ok1_sound.play();
-				}
-				else if (placement_successful && !which_sound_to_play)
-				{
-					placement_ok2_sound.play();
-				}
-				else
-				{
-					placement_error_sound.play();
-				}
-
-				if (instance->getWinner() != ' ')
-				{
-					winner_sound.play();
-					std::cout << "We have a winner: " << instance->getWinner();
-				}
-
-				if (instance->checkTie())
-				{
-					tie_sound.play();
-				}
-			}
-
-		}
-		else
-		{
-			// Handle play again button
-			if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
-			{
-				reset();
-				new_scene = 0;
-			}
-		}
-	
-		std::cout << "Mouse pressed at" << std::endl;
+	// Alternative keyboard way of playing the game
+	if (event->type == sf::Event::KeyPressed)
+	{
+		new_scene = handle_keypress(event->key.code);
 	}
 
 	return new_scene;
+}
+
+int SceneBattlefield::handle_mouse_over()
+{
+	// Mouse Cursor
+	sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+
+	sf::Vector2f cursor_position = mouse_position;
+	cursor_position.x = cursor_position.x - mouse_cursor.getSize().x / 2;
+	cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
+	mouse_cursor.setPosition(cursor_position);
+
+	// Hint halos
+	std::vector< int > board_grid_coords = getGridHit( mouse_position );
+
+	if (board_grid_coords[1] > -1 && board_grid_coords[0] == instance->getCurrentBoardId())
+	{
+		sf::Vector2f halo_coordinates = getBoardHaloCoorginates(board_grid_coords[1]);
+
+		if (instance->getCurrentPlayer() == 'X')
+		{
+			o_hint_halo.setPosition(halo_coordinates);
+			x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+		}
+		else
+		{
+			x_hint_halo.setPosition(halo_coordinates);
+			o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+		}
+	}
+	else
+	{
+		x_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+		o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
+	}
+
+	// Mouse cursor toggling
+	// - ACTIVE if player is targeting active board & empty grid
+	if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
+	{
+		if (instance->getCurrentPlayer() == 'X')
+		{
+			mouse_cursor.setTexture(x_marker_texture);
+		}
+		else
+		{
+			mouse_cursor.setTexture(o_marker_texture);
+		}
+	}
+	else
+	{
+		if (instance->getCurrentPlayer() == 'X')
+		{
+			mouse_cursor.setTexture(x_marker_inactive_texture);
+		}
+		else
+		{
+			mouse_cursor.setTexture(o_marker_inactive_texture);
+		}
+	}
+	mouse_cursor.setTextureRect( sf::IntRect(0, 0, x_marker_texture->getSize().x, x_marker_texture->getSize().y) );
+}
+
+int SceneBattlefield::handle_mouse_click()
+{
+	if (instance->getWinner() == ' ')
+	{
+		std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
+
+		// Do something when its not -1
+		if (board_grid_coords[0] >= 0)
+		{
+			bool placement_successful = instance->setGrid(board_grid_coords[0], board_grid_coords[1]);
+
+			srand(time(NULL));
+			int which_sound_to_play = rand() % 1;
+			if (placement_successful && which_sound_to_play)
+			{
+				placement_ok1_sound.play();
+			}
+			else if (placement_successful && !which_sound_to_play)
+			{
+				placement_ok2_sound.play();
+			}
+			else
+			{
+				placement_error_sound.play();
+			}
+
+			if (instance->getWinner() != ' ')
+			{
+				winner_sound.play();
+				std::cout << "We have a winner: " << instance->getWinner();
+			}
+
+			if (instance->checkTie())
+			{
+				tie_sound.play();
+			}
+		}
+
+	}
+	else
+	{
+		// Handle play again button
+		if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
+		{
+			reset();
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+int SceneBattlefield::handle_keypress(int keycode)
+{
+	// ESC key to go back to menu
+	if (keycode == sf::Keyboard::Escape)
+	{
+		return 0;
+	}
+
+	// Numeric to choose grid
+	if (keycode >= sf::Keyboard::Num1 && keycode <= sf::Keyboard::Num9 && instance->getWinner() == ' ')
+	{
+		bool placement_successful = instance->setGrid(instance->getCurrentBoardId(), keycode - sf::Keyboard::Num0 - 1);
+		srand(time(NULL));
+		int which_sound_to_play = rand() % 1;
+		// Sorry DRY principle, jsut this once I swear I promise
+		if (placement_successful && which_sound_to_play)
+		{
+			placement_ok1_sound.play();
+		}
+		else if (placement_successful && !which_sound_to_play)
+		{
+			placement_ok2_sound.play();
+		}
+		else
+		{
+			placement_error_sound.play();
+		}
+
+		if (instance->getWinner() != ' ')
+		{
+			winner_sound.play();
+			std::cout << "We have a winner: " << instance->getWinner();
+		}
+
+		if (instance->checkTie())
+		{
+			tie_sound.play();
+		}
+	}
+
+	return 1;
 }
 
 void SceneBattlefield::render()

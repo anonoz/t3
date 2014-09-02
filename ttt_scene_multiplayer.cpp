@@ -244,6 +244,11 @@ int SceneMultiplayer::handle_keypress(int key)
 		user_input_ip_address = user_input_ip_address.substr(0, user_input_ip_address.size()-1);
 	}
 
+	if (key == sf::Keyboard::Return && user_input_ip_address.length() > 0)
+	{
+		instance->connect(user_input_ip_address);
+	}
+
 	std::cout << user_input_ip_address << std::endl;
 
 	return 2; // Same scene

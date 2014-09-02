@@ -115,6 +115,12 @@ int SceneMenu::handle(sf::Event* xevent)
 			std::cout << "Mouse pressed detected at " << event->mouseButton.x << ", " << event->mouseButton.y << std::endl;
 			break;
 		}
+
+		case sf::Event::KeyPressed:
+		{
+			new_scene = handle_keypress(event->key.code);
+			break;
+		}
 	}
 
 	return new_scene;
@@ -139,6 +145,20 @@ int SceneMenu::handle_mouse_click(int click_x, int click_y)
 	{
 		system("start http://anonoz.github.io/t3");
 	}
+
+	return 0;
+}
+
+int SceneMenu::handle_keypress(int keycode)
+{
+	if (keycode == sf::Keyboard::S || keycode == sf::Keyboard::Num1)
+		return 1;
+
+	if (keycode == sf::Keyboard::L || keycode == sf::Keyboard::Num2)
+		return 2;
+
+	if (keycode == sf::Keyboard::F1)
+		system("start http://anonoz.github.io/t3");
 
 	return 0;
 }

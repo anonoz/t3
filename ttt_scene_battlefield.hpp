@@ -88,7 +88,9 @@ class SceneBattlefield
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance);
 		void render();
 		int handle(sf::Event* xevent);
-		int handle_mouse_click(int click_X, int click_y);
+		int handle_mouse_over();
+		int handle_mouse_click();
+		int handle_keypress(int);
 		void reset();
 
 		sf::Vector2f getGridCoordinates(int board_id, int grid_id);

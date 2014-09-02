@@ -44,6 +44,7 @@ class SceneMenu
 		void render();
 		int handle(sf::Event* xevent);
 		int handle_mouse_click(int click_X, int click_y);
+		int handle_keypress(int);
 };
 
 #endif

@@ -130,9 +130,6 @@ int TTT_Instance::getCurrentBoardId()
 // For each board, check if O and X took down either of the 3 verticals, 3 horizontals or the 2 diagonals.
 char TTT_Instance::getWinner()
 {
-	bool original_mode = multiplayer_mode;
-	multiplayer_mode = false;
-
 	for (int board_id = 0; board_id < 9; board_id++)
 	{
 		vector< char > board = main_board[ board_id ];
@@ -181,7 +178,6 @@ char TTT_Instance::getWinner()
 		}
 	}
 
-	multiplayer_mode = original_mode;
 	return ' ';
 }
 
@@ -246,6 +242,23 @@ bool TTT_Instance::didConnectionFail()
 {
 	if (multiplayer_connection_failed == false)
 	{
+		return true;
+	}
+
+	return false;
+}
+
+bool TTT_Instance::isDisconnected()
+{
+	return multiplayer_connection_failed;
+}
+
+bool TTT_Instance::didIJustLost()
+{
+	if (getWinner() != ' ' && getWinner() != whoAmI() && multiplayer_loserbetold == true)
+	{
+		std::cout << " I LOST NOW PLAY SOME SAX " << std::endl;
+		multiplayer_loserbetold = false;
 		return true;
 	}
 
@@ -362,6 +375,9 @@ void TTT_Instance::startConnectingToServer(string ip_address)
 // Actual gaming functions in multiplayer
 void TTT_Instance::onConnectingSuccess()
 {
+	// Turn off listenin thread
+	// stopListeningForClient();
+
 	// Connection successful hook
 	multiplayer_connected = true;
 	multiplayer_connecting = false;
@@ -455,6 +471,10 @@ bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 			return false;
 		}
 	}
+	else if (socket_send_result == sf::Socket::Disconnected)
+	{
+		reportDisconnection();
+	}
 	else
 	{
 		std::cout << "Request sending error: " << socket_send_result << std::endl;
@@ -506,8 +526,14 @@ void TTT_Instance::waitForNextMove()
 					current_player = (multiplayer_amiserver) ? 'X' : 'O';
 					multiplayer_myturn = true;
 
-					stopWaitingForNextMove();
+					// Am I losing?
+					if (getWinner() != ' ' && getWinner() != whoAmI())
+					{
+						std::cout << "I think I lost... " << std::endl;
+						multiplayer_loserbetold = true;
+					}
 
+					stopWaitingForNextMove();
 				}
 				else
 				{
@@ -520,6 +546,10 @@ void TTT_Instance::waitForNextMove()
 				main_board[ input_x ][ input_y ] = (multiplayer_amiserver) ? 'X' : 'O';
 				std::cout << "This shouldnt be called" << std::endl;
 			}
+		}
+		else if (socket_receive_status == sf::Socket::Disconnected)
+		{
+			reportDisconnection();
 		}
 		else
 		{
@@ -537,6 +567,16 @@ void TTT_Instance::startWaitingForNextMove()
 void TTT_Instance::stopWaitingForNextMove()
 {
 	waitForNextMove_thread->terminate();
+}
+
+void TTT_Instance::reportDisconnection()
+{
+	multiplayer_connected = false;
+	multiplayer_connection_failed = true;
+
+	waitForNextMove_thread->terminate();
+
+	reset();
 }
 
 // Packet services

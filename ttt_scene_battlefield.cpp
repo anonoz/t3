@@ -125,8 +125,17 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_winner_notice = x_winner_notice;
 	TTTHelpers::set_text_string(o_winner_notice, "PLAYER O WON", "CT");
 
+	you_won_notice = x_winner_notice;
+	TTTHelpers::set_text_string(you_won_notice, "YOU WON", "CT");
+
+	you_lost_notice = x_winner_notice;
+	TTTHelpers::set_text_string(you_lost_notice, "YOU LOST", "CT");
+
 	tie_notice = x_winner_notice;
 	TTTHelpers::set_text_string(tie_notice, "TIE", "CT");	
+
+	disconnected_notice = x_winner_notice;
+	TTTHelpers::set_text_string(disconnected_notice, "DISCONNECTED", "CT");
 
 	// Create winner mat play again inactive and active buttons
 	sf::Texture* playagain_button_texture = TTTHelpers::load_texture("assets/images/playagain-button.png");
@@ -143,12 +152,14 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	placement_error_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_error.ogg");
 	winner_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_win.ogg");
 	tie_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_tie.ogg");
+	loser_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/result_lose.ogg");
 
 	placement_ok1_sound.setBuffer(placement_ok1_sound_buffer);
 	placement_ok2_sound.setBuffer(placement_ok2_sound_buffer);
 	placement_error_sound.setBuffer(placement_error_sound_buffer);
 	winner_sound.setBuffer(winner_sound_buffer);
 	tie_sound.setBuffer(tie_sound_buffer);
+	loser_sound.setBuffer(loser_sound_buffer);
 
 }
 
@@ -245,7 +256,17 @@ int SceneBattlefield::handle_mouse_over()
 
 int SceneBattlefield::handle_mouse_click()
 {
-	if (instance->getWinner() == ' ')
+	// Game still running
+	if (instance->getWinner() != ' ' || (instance->isMultiplayer() && instance->isDisconnected()))
+	{
+		// Handle play again button
+		if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
+		{
+			reset();
+			return 0;
+		}
+	}
+	else
 	{
 		std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
 
@@ -282,15 +303,6 @@ int SceneBattlefield::handle_mouse_click()
 		}
 
 	}
-	else
-	{
-		// Handle play again button
-		if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
-		{
-			reset();
-			return 0;
-		}
-	}
 
 	return 1;
 }
@@ -300,6 +312,10 @@ int SceneBattlefield::handle_keypress(int keycode)
 	// ESC key to go back to menu
 	if (keycode == sf::Keyboard::Escape)
 	{
+		// Multiplayer cannot quit
+		if (instance->isMultiplayer())
+			return 1;
+
 		return 0;
 	}
 
@@ -395,7 +411,34 @@ void SceneBattlefield::render()
 	}
 
 	// Draw winner mat
-	if (instance->getWinner() == 'X')
+	// OMFG somebody ragequit liao!
+	if (instance->isMultiplayer() && instance->isDisconnected())
+	{
+		window->draw(o_winner_mat);
+		window->draw(disconnected_notice);
+		window->draw(playagain_button);
+	}
+	// Player wins on LAN
+	else if (instance->getWinner() != ' ' && instance->isMultiplayer() && instance->whoAmI() == instance->getWinner())
+	{
+		window->draw(x_winner_mat);
+		window->draw(you_won_notice);
+		window->draw(playagain_button);
+	}
+	// Player lost LAN game
+	else if (instance->getWinner() != ' ' && instance->isMultiplayer() && instance->whoAmI() != instance->getWinner())
+	{
+		window->draw(o_winner_mat);
+		window->draw(you_lost_notice);
+		window->draw(playagain_button);
+
+		if (instance->didIJustLost())
+		{
+			std::cout << "Play sax" << std::endl;
+			loser_sound.play();
+		}
+	}
+	else if (instance->getWinner() == 'X')
 	{
 		window->draw(x_winner_mat);
 		window->draw(x_winner_notice);
@@ -417,7 +460,10 @@ void SceneBattlefield::render()
 	// If got winner draw play again button too
 
 	// Draw cursors
-	if ((!instance->isMultiplayer() && instance->getWinner() == ' ') || (instance->isMultiplayer() && instance->isItMyTurn()))
+	if (	(!instance->isMultiplayer() && instance->getWinner() == ' ') 
+		|| 	(instance->isMultiplayer() && instance->isItMyTurn() && !instance->isDisconnected())
+		||	(instance->isMultiplayer() && instance->getWinner() != ' ')
+		)
 	{
 		window->setMouseCursorVisible(false);
 		window->draw(mouse_cursor);
@@ -564,5 +610,6 @@ std::vector<int> SceneBattlefield::getGridHit(const sf::Vector2f& mouse_coords)
 void SceneBattlefield::reset()
 {
 	// Instance = game model. The truth. The source...
+	instance->quitMultiplayer();
 	instance->reset();
 }

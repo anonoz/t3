@@ -40,6 +40,7 @@ class TTT_Instance
 		bool multiplayer_connection_failed;
 		bool multiplayer_amiserver;
 		bool multiplayer_myturn;
+		bool multiplayer_loserbetold;
 
 		// MP variables
 		int enemy_mouse_position[2];
@@ -83,6 +84,8 @@ class TTT_Instance
 		bool isItMyTurn();
 		char whoAmI();
 		bool didConnectionFail();
+		bool isDisconnected();
+		bool didIJustLost();
 
 		bool connect(string ip_address);
 
@@ -101,6 +104,8 @@ class TTT_Instance
 		void waitForNextMove();
 		void startWaitingForNextMove();
 		void stopWaitingForNextMove();
+
+		void reportDisconnection();
 
 		int sendPacket(int, int, int);
 };

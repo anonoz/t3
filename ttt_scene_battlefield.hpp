@@ -41,7 +41,10 @@ class SceneBattlefield
 
 		sf::Text x_winner_notice,
 			o_winner_notice,
+			you_won_notice,
+			you_lost_notice,
 			tie_notice,
+			disconnected_notice,
 			play_again;
 
 		sf::RectangleShape battle_board

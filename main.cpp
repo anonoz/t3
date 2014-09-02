@@ -24,8 +24,11 @@ int main()
 	window->setFramerateLimit(60);
 	window->setKeyRepeatEnabled(false);
 
+	// Game instance (model in MVC)
+	TTT_Instance* instance = new TTT_Instance;
+
 	// Initiate scene director (graphics dpt)
-	SceneDirector director(window);
+	SceneDirector director(window, instance);
 
 	// Here goes the actual loop
 	while (window->isOpen())
@@ -64,6 +67,11 @@ int main()
 		// Clear console for status reporting
 		// system("cls");
 	}
+
+	// Anyway if got any port stuff, close them
+	instance->stopListeningForClient();
+	instance->stopWaitingForNextMove();
+	instance->stopConnectingToServer();
 
 	return 0;
 }

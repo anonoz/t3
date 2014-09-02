@@ -20,9 +20,10 @@ Tutorial Section: TC201
 
 #include "ttt_scene_director.hpp"
 
-SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
+SceneDirector::SceneDirector(sf::RenderWindow* xwindow, TTT_Instance* xinstance)
 {
 	window = xwindow;
+	instance = xinstance;
 
 	// Load fonts
 	sf::Font* kenvector_future_thin = TTTHelpers::load_font("assets/fonts/kenvector_future_thin.ttf");
@@ -41,7 +42,7 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow)
 		ttt_fonts.push_back(kenvector_future);
 
 	// Game instance should be controlled from here
-	instance = new TTT_Instance();
+	// instance = new TTT_Instance();
 
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);

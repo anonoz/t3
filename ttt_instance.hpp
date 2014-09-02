@@ -95,6 +95,7 @@ class TTT_Instance
 
 		void connectToServer();
 		void startConnectingToServer(string ip_address);
+		void stopConnectingToServer();
 
 		void onConnectingSuccess();
 		void onConnectingFailure();

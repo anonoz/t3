@@ -37,7 +37,7 @@ class SceneDirector
 		SceneMultiplayer* scene_multiplayer;
 
 	public:
-		SceneDirector(sf::RenderWindow* xwindow);
+		SceneDirector(sf::RenderWindow* xwindow, TTT_Instance* xinstance);
 		int getCurrentScene();
 		void setCurrentScene(int target_current_scene);
 		void handle(sf::Event* xevent);

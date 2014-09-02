@@ -326,6 +326,7 @@ void TTT_Instance::startListeningForClient()
 
 void TTT_Instance::stopListeningForClient()
 {
+	if (listenForClient_thread == 0) return;
 	std::cout << "Stopping listener for client... " << std::endl;
 	listenForClient_thread->terminate();
 	listener->close();
@@ -370,6 +371,12 @@ void TTT_Instance::startConnectingToServer(string ip_address)
 	server = new sf::IpAddress(ip_address);
 	connectToServer_thread = new sf::Thread(&TTT_Instance::connectToServer, this);
 	connectToServer_thread->launch();
+}
+
+void TTT_Instance::stopConnectingToServer()
+{
+	if (connectToServer_thread == 0) return;
+	connectToServer_thread->terminate();
 }
 
 // Actual gaming functions in multiplayer
@@ -566,6 +573,7 @@ void TTT_Instance::startWaitingForNextMove()
 
 void TTT_Instance::stopWaitingForNextMove()
 {
+	if (waitForNextMove_thread == 0) return;
 	waitForNextMove_thread->terminate();
 }
 

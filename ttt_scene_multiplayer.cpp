@@ -73,6 +73,9 @@ SceneMultiplayer::SceneMultiplayer(sf::RenderWindow* xwindow, vector<sf::Font*>*
 	ip_address_textbox.setPosition((window_size_v2f.x / 2), (window_size_v2f.x / 2) - 134);
 	TTTHelpers::set_text_string(ip_address_textbox, user_input_ip_address, "CT");
 
+	// Blinking cursors
+	blinking_cursor = ip_address_textbox;
+
 	// Dotted line
 	sf::Texture* dotted_line_texture = TTTHelpers::load_texture("assets/images/dotted-line.png");
 	sf::Vector2u dotted_line_texture_size = dotted_line_texture->getSize();
@@ -88,15 +91,15 @@ SceneMultiplayer::SceneMultiplayer(sf::RenderWindow* xwindow, vector<sf::Font*>*
 	give_friend_your_ip.setStyle(sf::Text::Regular);
 	give_friend_your_ip.setCharacterSize(19);
 	give_friend_your_ip.setPosition((window_size_v2f.x / 2), (window_size_v2f.x / 2) - 40 );
-	TTTHelpers::set_text_string(give_friend_your_ip, "OR GIVE YOUR FRIEND YOURS & GAME WILL START", "CT");
+	TTTHelpers::set_text_string(give_friend_your_ip, "OR GIVE YOUR FRIEND YOURS. GAME WILL START INSTANTLY.", "CT");
 
 	// Your IP Address
-	your_ip_address.setFont(*((*ttt_fonts)[0]));
+	your_ip_address.setFont(*((*ttt_fonts)[4]));
 	your_ip_address.setColor(sf::Color::White);
 	your_ip_address.setStyle(sf::Text::Regular);
 	your_ip_address.setCharacterSize(19);
-	your_ip_address.setPosition((window_size_v2f.x / 2), (window_size_v2f.x / 2) - 20);
-	TTTHelpers::set_text_string(your_ip_address, sf::IpAddress::getLocalAddress().toString(), "CT");
+	your_ip_address.setPosition((window_size_v2f.x / 2), (window_size_v2f.x / 2) - 10);
+	TTTHelpers::set_text_string(your_ip_address, "Your IP Address: " + sf::IpAddress::getLocalAddress().toString(), "CT");
 
 	// Connect button
 	sf::Texture* connect_button_texture = TTTHelpers::load_texture("assets/images/connect-button.png");
@@ -161,9 +164,36 @@ void SceneMultiplayer::render()
 		TTTHelpers::set_text_string(ip_address_textbox, user_input_ip_address, "CT");
 		window->draw(ip_address_textbox);
 
+		// Blinking cursor special
+		// First calculate the coordinates the top right corner of text box above
+		sf::FloatRect ip_address_textbox_rect(ip_address_textbox.getGlobalBounds());
+
+		if (user_input_ip_address.length() > 0)
+		{
+			blinking_cursor.setPosition(ip_address_textbox_rect.left + ip_address_textbox_rect.width + 20, ip_address_textbox_rect.top);
+		}
+		else
+		{
+			blinking_cursor.setPosition(ip_address_textbox_rect.left, ip_address_textbox_rect.top);
+		}
+
+		TTTHelpers::set_text_string(blinking_cursor, "|", "CT");
+
+		sf::Time blinking_time = blink_clock.getElapsedTime();
+		if (blinking_time.asMilliseconds() % 1500 <= 375
+			|| blinking_time.asMilliseconds() % 1500 >= 750
+			&& blinking_time.asMilliseconds() % 1500 <= 1125)
+		{
+			window->draw(blinking_cursor);
+		}
+
 		window->draw(dotted_line);
-		window->draw(give_friend_your_ip);
-		window->draw(your_ip_address);
+
+		if (instance->isListening())
+		{
+			window->draw(give_friend_your_ip);
+			window->draw(your_ip_address);
+		}
 
 		if (user_input_ip_address.length() > 0)
 			window->draw(connect_button);

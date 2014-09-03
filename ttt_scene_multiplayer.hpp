@@ -18,6 +18,7 @@ Tutorial Section: TC201
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <time.h>
 
 #include "ttt_helpers.hpp"
 #include "ttt_instance.hpp"
@@ -52,7 +53,10 @@ class SceneMultiplayer
 			ip_address_textbox,
 			give_friend_your_ip,
 			your_ip_address,
-			s1_waiting;
+			s1_waiting,
+			blinking_cursor;
+
+		sf::Clock blink_clock;
 
 	public:
 		SceneMultiplayer(sf::RenderWindow* xwindow, vector< sf::Font* >* xttt_fonts, TTT_Instance* xinstance);

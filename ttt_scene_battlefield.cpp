@@ -160,7 +160,6 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	winner_sound.setBuffer(winner_sound_buffer);
 	tie_sound.setBuffer(tie_sound_buffer);
 	loser_sound.setBuffer(loser_sound_buffer);
-
 }
 
 void SceneBattlefield::reset()

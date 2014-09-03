@@ -57,19 +57,23 @@ class TTT_Instance
 		sf::Thread* connectToServer_thread;
 		sf::Thread* waitForNextMove_thread;
 
+		// Thread functions!
+		void waitForNextMove();
+		void connectToServer();
+		void listenForClient();
+
 	public:
 		TTT_Instance();
 
 		void reset();
+		void quitGame();
 
 		bool setGrid(int board_id, int grid_id);
 		char getGrid(int board_id, int grid_id);
 		bool checkGrid(int board_id, int grid_id);
 
 		char getCurrentPlayer();
-		
 		int getCurrentBoardId();
-
 		std::vector< std::vector<char> > getMainBoard();
 		char getWinner();
 		bool checkTie();
@@ -79,6 +83,7 @@ class TTT_Instance
 		void quitMultiplayer();
 
 		bool isMultiplayer();
+		bool isListening();
 		bool isConnected();
 		bool isConnecting();
 		bool isItMyTurn();
@@ -89,11 +94,9 @@ class TTT_Instance
 
 		bool connect(string ip_address);
 
-		void listenForClient();
 		void startListeningForClient();
 		void stopListeningForClient();
 
-		void connectToServer();
 		void startConnectingToServer(string ip_address);
 		void stopConnectingToServer();
 
@@ -101,15 +104,13 @@ class TTT_Instance
 		void onConnectingFailure();
 
 		bool sendGridPlacementRequest(int board_id, int grid_id);
+		int sendPacket(int, int, int);
 
-		void waitForNextMove();
 		void startWaitingForNextMove();
 		void stopWaitingForNextMove();
 
 		void reportDisconnection();
 		void requestDisconnection();
-
-		int sendPacket(int, int, int);
 };
 
 #endif

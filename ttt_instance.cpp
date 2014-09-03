@@ -58,6 +58,18 @@ void TTT_Instance::reset()
 	current_player = 'X';
 }
 
+void TTT_Instance::quitGame()
+{
+	if (isMultiplayer())
+	{
+		quitMultiplayer();
+	}
+	else
+	{
+		reset();
+	}
+}
+
 std::vector< std::vector<char> > TTT_Instance::getMainBoard()
 {
 	return main_board;
@@ -65,6 +77,16 @@ std::vector< std::vector<char> > TTT_Instance::getMainBoard()
 
 bool TTT_Instance::setGrid(int board_id, int grid_id)
 {
+	// NO if board is not active
+	if (current_board_id != board_id)
+		return false;
+
+	if (isMultiplayer())
+	{
+		if (!isItMyTurn())
+			return false;
+	}
+
 	// Check if someone placed there before
 	if (checkGrid(board_id, grid_id))
 	{

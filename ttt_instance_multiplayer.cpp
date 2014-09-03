@@ -25,11 +25,18 @@ void TTT_Instance::quitMultiplayer()
 {
 	multiplayer_mode = false;
 	stopWaitingForNextMove();
+	requestDisconnection();
+	reset();
 }
 
 bool TTT_Instance::isMultiplayer()
 {
 	return multiplayer_mode;
+}
+
+bool TTT_Instance::isListening()
+{
+	return multiplayer_listening_for_client;
 }
 
 bool TTT_Instance::isConnected()
@@ -104,14 +111,18 @@ bool TTT_Instance::connect(string ip_address)
 // Server specific
 void TTT_Instance::listenForClient()
 {
+	multiplayer_listening_for_client = true;
+
 	listener = new sf::TcpListener;
 	listener->listen(multiplayer_port);
 
-	std::cout << "Listening for client on port " << multiplayer_port << std::endl;
+
+	// If successful, will be stuck in line below
 	int listen_status = listener->accept(*socket);
 
 	if (listen_status == sf::Socket::Done)
 	{
+		std::cout << "Listening for client on port " << multiplayer_port << std::endl;
 		multiplayer_amiserver = true;
 		onConnectingSuccess();
 		return;
@@ -119,15 +130,20 @@ void TTT_Instance::listenForClient()
 	else
 	{
 		// Maybe someone is using the socket, nvm, listen to another
+		delete listener;
+		listener = new sf::TcpListener;
 		listener->listen(multiplayer_port + 1);
 		listen_status = listener->accept(*socket);
 
 		if (listen_status != sf::Socket::Done)
 		{
-			// onConnectingFailure();
+			// SO WRONG IT ENDS UP HERE!!!
+			multiplayer_listening_for_client = false;
+			std::cout << "Second listen failure: " << listen_status << std::endl;
 		}
 		else
 		{
+			std::cout << "Listening for client on port " << multiplayer_port + 1 << std::endl;
 			multiplayer_amiserver = true;
 			onConnectingSuccess();
 		}
@@ -144,10 +160,13 @@ void TTT_Instance::startListeningForClient()
 
 void TTT_Instance::stopListeningForClient()
 {
-	if (listenForClient_thread == 0) return;
+	if (listenForClient_thread == NULL) return;
 	std::cout << "Stopping listener for client... " << std::endl;
 	listenForClient_thread->terminate();
-	listener->close();
+	delete listener, listenForClient_thread;
+	listener = NULL;
+	listenForClient_thread = NULL;
+	multiplayer_listening_for_client = false;
 }
 
 // Client specific
@@ -260,22 +279,32 @@ void TTT_Instance::onConnectingFailure()
 
 bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 {
-	// stopWaitingForNextMove();
+	std::cout << "Sending grid placement request: "
+		<< board_id
+		<< grid_id
+		<< std::endl;
 
 	int socket_send_result = sendPacket(2, board_id, grid_id);
-	std::cout << "Sending grid placement request" << std::endl;
 
 	if (socket_send_result == sf::Socket::Done)
 	{
 		sf::Packet receiving_packet;
-		int message_type, input_x, input_y;
+		int message_type = 0,
+			input_x = 0,
+			input_y = 0;
 
 		int retrieval_status = socket->receive(receiving_packet);
 
 		if (retrieval_status == sf::Socket::Done)
 		{
-			std::cout << "Received approval message" << std::endl;
 			receiving_packet >> message_type >> input_x >> input_y;
+
+			std::cout << "Received approval message:" 
+				<< message_type
+				<< " " << input_x
+				<< " " << input_y
+				<< std::endl;
+
 			if (message_type == 3)
 			{
 				if (input_x > -1 && input_y > -1)
@@ -289,6 +318,17 @@ bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 					return false;
 				}
 			}
+			else if (message_type == 99)
+			{
+				std::cout << "Message 99 captured in placement reply" << std::endl;
+				reportDisconnection();
+				return false;
+			}
+		}
+		else if (retrieval_status == sf::Socket::Disconnected)
+		{
+			reportDisconnection();
+			return false;
 		}
 		else
 		{
@@ -299,6 +339,7 @@ bool TTT_Instance::sendGridPlacementRequest(int board_id, int grid_id)
 	else if (socket_send_result == sf::Socket::Disconnected)
 	{
 		reportDisconnection();
+		return false;
 	}
 	else
 	{
@@ -336,6 +377,7 @@ void TTT_Instance::waitForNextMove()
 			else if (message_type == 2)
 			{
 				std::cout << "Enemy requested for placement!" << std::endl;
+
 				if (checkGrid(input_x, input_y))
 				{
 					// Approve
@@ -395,8 +437,11 @@ void TTT_Instance::startWaitingForNextMove()
 
 void TTT_Instance::stopWaitingForNextMove()
 {
-	if (waitForNextMove_thread == 0) return;
+	if (waitForNextMove_thread == NULL) return;
 	waitForNextMove_thread->terminate();
+	delete waitForNextMove_thread;
+	waitForNextMove_thread = NULL;
+	std::cout << "No longer waiting for next move" << std::endl;
 }
 
 void TTT_Instance::reportDisconnection()
@@ -404,17 +449,17 @@ void TTT_Instance::reportDisconnection()
 	multiplayer_connected = false;
 	multiplayer_connection_failed = true;
 
-	waitForNextMove_thread->terminate();
+	stopWaitingForNextMove();
 
 	// reset();
-	quitMultiplayer();
+	// quitMultiplayer();
 }
 
 void TTT_Instance::requestDisconnection()
 {
+	if (isDisconnected()) return;
 	sendPacket(99, 0, 0);
 	stopListeningForClient();
-	quitMultiplayer();
 }
 
 // Packet services
@@ -424,5 +469,8 @@ int TTT_Instance::sendPacket(int message_type, int input_x, int input_y)
 	sending_packet << message_type << input_x << input_y;
 
 	int send_status = socket->send(sending_packet);
+
+	std::cout << "Packet sent: " << message_type << input_x << input_y << std::endl;
+
 	return send_status;
 }

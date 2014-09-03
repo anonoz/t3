@@ -252,7 +252,5 @@ int SceneMultiplayer::handle_keypress(int key)
 		instance->connect(user_input_ip_address);
 	}
 
-	std::cout << user_input_ip_address << std::endl;
-
 	return 2; // Same scene
 }

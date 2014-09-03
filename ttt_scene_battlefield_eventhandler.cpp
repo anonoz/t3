@@ -148,11 +148,7 @@ int SceneBattlefield::handle_mouse_click()
 		}
 		else if (quit_button.getGlobalBounds().contains(mouse_position))
 		{
-			instance->reset();
-			if (instance->isMultiplayer())
-			{
-				instance->requestDisconnection();
-			}
+			instance->quitGame();
 			return 0;
 		}
 

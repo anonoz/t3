@@ -141,6 +141,9 @@ void SceneMultiplayer::leave()
 
 void SceneMultiplayer::render()
 {
+	// Fix bug of OS mouse cursor disappearing
+	window->setMouseCursorVisible(true);
+
 	window->draw(battle_board);
 	window->draw(blue_mat);
 	window->draw(heading1);

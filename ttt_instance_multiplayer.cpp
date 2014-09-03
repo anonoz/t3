@@ -123,10 +123,14 @@ void TTT_Instance::listenForClient()
 		listen_status = listener->accept(*socket);
 
 		if (listen_status != sf::Socket::Done)
-			onConnectingFailure();
+		{
+			// onConnectingFailure();
+		}
 		else
+		{
 			multiplayer_amiserver = true;
 			onConnectingSuccess();
+		}
 
 		return;
 	}
@@ -402,7 +406,8 @@ void TTT_Instance::reportDisconnection()
 
 	waitForNextMove_thread->terminate();
 
-	reset();
+	// reset();
+	quitMultiplayer();
 }
 
 void TTT_Instance::requestDisconnection()

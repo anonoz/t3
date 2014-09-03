@@ -94,7 +94,14 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	o_hint_halo = x_hint_halo;
 	o_hint_halo.setTexture(o_hint_halo_texture);
 
-	// Create grid hitzones for event handling
+	// Multiplayer: Wait for opponent
+	sf::Texture* waiting_for_opponent_texture = TTTHelpers::load_texture("assets/images/waiting-for-opponent.png");
+	sf::Vector2u waiting_for_opponent_texture_size = waiting_for_opponent_texture->getSize();
+
+	waiting_for_opponent.setTexture(waiting_for_opponent_texture);
+	waiting_for_opponent.setSize( sf::Vector2f(waiting_for_opponent_texture_size.x, waiting_for_opponent_texture_size.y) );
+	waiting_for_opponent.setTextureRect( sf::IntRect(0, 0, waiting_for_opponent_texture_size.x, waiting_for_opponent_texture_size.y) );
+	waiting_for_opponent.setPosition( (window_size_v2f.x / 2) - (waiting_for_opponent_texture_size.x / 2), (window_size_v2f.y / 2) - (waiting_for_opponent_texture_size.y / 2) + 200 );
 
 	// Create winner mat
 	sf::Texture* x_winner_mat_texture = TTTHelpers::load_texture("assets/images/x-winner-mat.png");

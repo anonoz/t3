@@ -146,47 +146,28 @@ char TTT_Instance::getWinner()
 		vector< char > board = main_board[ board_id ];
 
 		// Check horizontal lines
-		if (board[0] == board[1] && board[1] == board[2])
+		for (int x = 0; x <3; x++)
 		{
-			if (board[0] != ' ') return board[0];
-		}
-
-		if (board[3] == board[4] && board[4] == board[5])
-		{
-			if (board[3] != ' ') return board[3];
-		}
-
-		if (board[6] == board[7] && board[7] == board[8])
-		{
-			if (board[6] != ' ') return board[6];
+			if (   board[ x * 3 ] == board[x * 3 + 1]
+				&& board[ x * 3 + 1] == board[ x * 3 + 2]
+				&& board[ x * 3 ] != ' ' )
+				return board[ x * 3 ];
 		}
 
 		// Check vertical lines
-		if (board[0] == board[3] && board[3] == board[6])
+		for (int y = 0; y < 3; y++)
 		{
-			if (board[0] != ' ') return board[0];
-		}
-
-		if (board[1] == board[4] && board[4] == board[7])
-		{
-			if (board[1] != ' ') return board[1];
-		}
-
-		if (board[2] == board[5] && board[5] == board[8])
-		{
-			if (board[2] != ' ') return board[2];
+			if (   board[ y ] == board[y + 3]
+				&& board[ y + 3] == board[y + 6]
+				&& board[y] != ' ')
+				return board[y];
 		}
 
 		// Check diagonal lines
-		if (board[0] == board[4] && board[4] == board[8])
-		{
-			if (board[0] != ' ') return board[0];
-		}
-
-		if (board[2] == board[4] && board[4] == board[6])
-		{
-			if (board[2] != ' ') return board[2];
-		}
+		if (  ((board[0] == board[4] && board[4] == board[8])
+			|| (board[2] == board[4] && board[4] == board[6]))
+			&&  board[4] != ' ')
+			return board[4];
 	}
 
 	return ' ';

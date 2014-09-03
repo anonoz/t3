@@ -119,6 +119,10 @@ void SceneBattlefield::render()
 		window->draw(playagain_button);
 	}
 
+	// MP: waiting for opponent
+	if (instance->isMultiplayer() && !instance->isItMyTurn())
+		window->draw(waiting_for_opponent);
+
 	// Draw cursors
 	if (	(!instance->isMultiplayer() && instance->getWinner() == ' ') 
 		|| 	(instance->isMultiplayer() && instance->isItMyTurn() && !instance->isDisconnected())

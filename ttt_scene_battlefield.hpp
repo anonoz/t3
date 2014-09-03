@@ -37,7 +37,11 @@ class SceneBattlefield
 		sf::Texture* x_marker_texture,
 			*o_marker_texture,
 			*x_marker_inactive_texture,
-			*o_marker_inactive_texture;
+			*o_marker_inactive_texture,
+			*restart_button_normal_texture,
+			*restart_button_hover_texture,
+			*quit_button_normal_texture,
+			*quit_button_hover_texture;
 
 		sf::Text x_winner_notice,
 			o_winner_notice,
@@ -47,18 +51,20 @@ class SceneBattlefield
 			disconnected_notice,
 			play_again;
 
-		sf::RectangleShape battle_board
-			, x_marker
-			, o_marker
-			, x_active_halo
-			, o_active_halo
-			, x_hint_halo
-			, o_hint_halo
-			, mouse_cursor
-			, x_winner_mat
-			, o_winner_mat
-			, tie_mat
-			, playagain_button;
+		sf::RectangleShape battle_board, 
+			x_marker, 
+			o_marker, 
+			x_active_halo, 
+			o_active_halo, 
+			x_hint_halo, 
+			o_hint_halo, 
+			mouse_cursor, 
+			x_winner_mat, 
+			o_winner_mat, 
+			tie_mat, 
+			playagain_button,
+			restart_button,
+			quit_button;
 
 		sf::SoundBuffer* hover_grid_sound_buffer,
 			placement_ok1_sound_buffer,

@@ -14,6 +14,13 @@ void SceneBattlefield::render()
 	// Draw mainboard
 	window->draw( battle_board );
 
+	// Draw buttons
+	if (!instance->isMultiplayer())
+	{
+		window->draw(restart_button);
+	}
+	window->draw(quit_button);
+
 	// Draw active halo
 	sf::Vector2f halo_coordinates = getBoardHaloCoorginates( instance->getCurrentBoardId() );
 
@@ -112,14 +119,47 @@ void SceneBattlefield::render()
 		window->draw(playagain_button);
 	}
 
-	// If got winner draw play again button too
-
 	// Draw cursors
 	if (	(!instance->isMultiplayer() && instance->getWinner() == ' ') 
 		|| 	(instance->isMultiplayer() && instance->isItMyTurn() && !instance->isDisconnected())
 		||	(instance->isMultiplayer() && instance->getWinner() != ' ')
 		)
 	{
+		// Mouse Cursor
+		sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+
+		sf::Vector2f cursor_position = mouse_position;
+		cursor_position.x = cursor_position.x - mouse_cursor.getSize().x / 2;
+		cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
+		mouse_cursor.setPosition(cursor_position);
+
+		// Belongs to ttt_scene_battlefield_eventhandler but moved here
+		//   due to need for real time update
+		std::vector< int > board_grid_coords = getGridHit( mouse_position );
+
+		if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
+		{
+			if (instance->getCurrentPlayer() == 'X')
+			{
+				mouse_cursor.setTexture(x_marker_texture);
+			}
+			else
+			{
+				mouse_cursor.setTexture(o_marker_texture);
+			}
+		}
+		else
+		{
+			if (instance->getCurrentPlayer() == 'X')
+			{
+				mouse_cursor.setTexture(x_marker_inactive_texture);
+			}
+			else
+			{
+				mouse_cursor.setTexture(o_marker_inactive_texture);
+			}
+		}
+		
 		window->setMouseCursorVisible(false);
 		window->draw(mouse_cursor);
 	}

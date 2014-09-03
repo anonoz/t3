@@ -146,6 +146,23 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 	playagain_button.setTextureRect(sf::IntRect(0, 0, playagain_button_texture_size.x, playagain_button_texture_size.y));
 	playagain_button.setPosition( (window_size_v2f.x / 2) - (playagain_button.getSize().x / 2) , (window_size_v2f.y / 2) - (playagain_button.getSize().y / 2) + 40);
 
+	// Operation Awesomeness: Adding restart and quit button A LOT of players have been asking for!
+	restart_button_normal_texture = TTTHelpers::load_texture("assets/images/restart-inactive.png");
+	restart_button_hover_texture  = TTTHelpers::load_texture("assets/images/restart-active.png");
+	quit_button_normal_texture    = TTTHelpers::load_texture("assets/images/quit-inactive.png");
+	quit_button_hover_texture     = TTTHelpers::load_texture("assets/images/quit-active.png");
+
+	sf::Vector2u ingame_buttons_texture_size = restart_button_normal_texture->getSize();
+
+	restart_button.setTexture(restart_button_normal_texture);
+	restart_button.setSize( sf::Vector2f(ingame_buttons_texture_size.x, ingame_buttons_texture_size.y) );
+	restart_button.setTextureRect(sf::IntRect(0, 0, ingame_buttons_texture_size.x, ingame_buttons_texture_size.y));
+	restart_button.setPosition( (window_size_v2f.x) - 120 , TOP_LEFT_Y );
+
+	quit_button = restart_button;
+	quit_button.setTexture(quit_button_normal_texture);
+	quit_button.setPosition( 10, TOP_LEFT_Y );
+
 	// Create the soundbytes
 	placement_ok1_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_1.ogg");
 	placement_ok2_sound_buffer = *TTTHelpers::load_sound_buffer("assets/sounds/placement_2.ogg");

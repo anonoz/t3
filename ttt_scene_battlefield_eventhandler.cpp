@@ -41,14 +41,8 @@ int SceneBattlefield::handle(sf::Event* xevent)
 
 int SceneBattlefield::handle_mouse_over()
 {
-	// Mouse Cursor
 	sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
-
-	sf::Vector2f cursor_position = mouse_position;
-	cursor_position.x = cursor_position.x - mouse_cursor.getSize().x / 2;
-	cursor_position.y = cursor_position.y - mouse_cursor.getSize().y / 2;
-	mouse_cursor.setPosition(cursor_position);
-
+	
 	// Hint halos
 	std::vector< int > board_grid_coords = getGridHit( mouse_position );
 
@@ -73,35 +67,32 @@ int SceneBattlefield::handle_mouse_over()
 		o_hint_halo.setPosition(sf::Vector2f(1000, 1000));
 	}
 
-	// Mouse cursor toggling
-	// - ACTIVE if player is targeting active board & empty grid
-	if (instance->checkGrid(board_grid_coords[0], board_grid_coords[1]))
+	// Restart n Quit buttons
+	if (restart_button.getGlobalBounds().contains(mouse_position))
 	{
-		if (instance->getCurrentPlayer() == 'X')
-		{
-			mouse_cursor.setTexture(x_marker_texture);
-		}
-		else
-		{
-			mouse_cursor.setTexture(o_marker_texture);
-		}
+		restart_button.setTexture(restart_button_hover_texture);
+	}
+	else if (quit_button.getGlobalBounds().contains(mouse_position))
+	{
+		quit_button.setTexture(quit_button_hover_texture);
 	}
 	else
 	{
-		if (instance->getCurrentPlayer() == 'X')
-		{
-			mouse_cursor.setTexture(x_marker_inactive_texture);
-		}
-		else
-		{
-			mouse_cursor.setTexture(o_marker_inactive_texture);
-		}
+		restart_button.setTexture(restart_button_normal_texture);
+		quit_button.setTexture(quit_button_normal_texture);
 	}
+
+	// Mouse cursor toggling
+	// - ACTIVE if player is targeting active board & empty grid
+	
+	// Dude to real time need this event handler moved to renderer
+
 	mouse_cursor.setTextureRect( sf::IntRect(0, 0, x_marker_texture->getSize().x, x_marker_texture->getSize().y) );
 }
 
 int SceneBattlefield::handle_mouse_click()
 {
+	sf::Vector2f mouse_position( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
 	// Game still running
 	if (instance->getWinner() != ' ' || (instance->isMultiplayer() && instance->isDisconnected()))
 	{
@@ -109,12 +100,14 @@ int SceneBattlefield::handle_mouse_click()
 		if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
 		{
 			reset();
-			return 0;
+
+			if (!instance->isMultiplayer())
+				return 0;
 		}
 	}
 	else
 	{
-		std::vector<int> board_grid_coords = getGridHit( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
+		std::vector<int> board_grid_coords = getGridHit( mouse_position );
 
 		// Do something when its not -1
 		if (board_grid_coords[0] >= 0)
@@ -146,6 +139,21 @@ int SceneBattlefield::handle_mouse_click()
 			{
 				tie_sound.play();
 			}
+		}
+
+		// Restart n Quit buttons
+		if (restart_button.getGlobalBounds().contains(mouse_position))
+		{
+			instance->reset();
+		}
+		else if (quit_button.getGlobalBounds().contains(mouse_position))
+		{
+			instance->reset();
+			if (instance->isMultiplayer())
+			{
+				instance->requestDisconnection();
+			}
+			return 0;
 		}
 
 	}

@@ -24,6 +24,7 @@ void TTT_Instance::resetMultiplayer()
 void TTT_Instance::quitMultiplayer()
 {
 	multiplayer_mode = false;
+	stopWaitingForNextMove();
 }
 
 bool TTT_Instance::isMultiplayer()
@@ -366,6 +367,10 @@ void TTT_Instance::waitForNextMove()
 				main_board[ input_x ][ input_y ] = (multiplayer_amiserver) ? 'X' : 'O';
 				std::cout << "This shouldnt be called" << std::endl;
 			}
+			else if (message_type == 99)
+			{
+				reportDisconnection();
+			}
 		}
 		else if (socket_receive_status == sf::Socket::Disconnected)
 		{
@@ -398,6 +403,13 @@ void TTT_Instance::reportDisconnection()
 	waitForNextMove_thread->terminate();
 
 	reset();
+}
+
+void TTT_Instance::requestDisconnection()
+{
+	sendPacket(99, 0, 0);
+	stopListeningForClient();
+	quitMultiplayer();
 }
 
 // Packet services

@@ -107,6 +107,7 @@ class TTT_Instance
 		void stopWaitingForNextMove();
 
 		void reportDisconnection();
+		void requestDisconnection();
 
 		int sendPacket(int, int, int);
 };

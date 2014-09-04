@@ -43,8 +43,8 @@ class SceneMenu
 		SceneMenu(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts);
 		void render();
 		int handle(sf::Event* xevent);
-		int handle_mouse_click(int click_X, int click_y);
-		int handle_keypress(int);
+		int handleMouseClick(int click_X, int click_y);
+		int handleKeyPress(int);
 };
 
 #endif

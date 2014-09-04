@@ -67,8 +67,8 @@ class SceneMultiplayer
 		void render();
 
 		int handle(sf::Event* event);
-		int handle_mouse_click(int click_x, int click_y);
-		int handle_keypress(int key);
+		int handleMouseClick(int click_x, int click_y);
+		int handleKeyPress(int key);
 };
 
 #endif

@@ -27,13 +27,13 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	// - Placement of markers
 	if (event->type == sf::Event::MouseButtonPressed)
 	{
-		new_scene = handle_mouse_click();
+		new_scene = handleMouseClick();
 	}
 
 	// Alternative keyboard way of playing the game
 	if (event->type == sf::Event::KeyPressed)
 	{
-		new_scene = handle_keypress(event->key.code);
+		new_scene = handleKeyPress(event->key.code);
 	}
 
 	return new_scene;
@@ -90,7 +90,7 @@ int SceneBattlefield::handle_mouse_over()
 	mouse_cursor.setTextureRect( sf::IntRect(0, 0, x_marker_texture->getSize().x, x_marker_texture->getSize().y) );
 }
 
-int SceneBattlefield::handle_mouse_click()
+int SceneBattlefield::handleMouseClick()
 {
 	sf::Vector2f mouse_position( static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)) );
 	// Game still running
@@ -163,7 +163,7 @@ int SceneBattlefield::handle_mouse_click()
 	return 1;
 }
 
-int SceneBattlefield::handle_keypress(int keycode)
+int SceneBattlefield::handleKeyPress(int keycode)
 {
 	// ESC key to go back to menu
 	if (keycode == sf::Keyboard::Escape)

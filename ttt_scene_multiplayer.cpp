@@ -217,14 +217,14 @@ int SceneMultiplayer::handle(sf::Event* xevent)
 		case sf::Event::MouseButtonReleased:
 		{
 			// Delegate mouse click event
-			return handle_mouse_click(event->mouseButton.x, event->mouseButton.y);
+			return handleMouseClick(event->mouseButton.x, event->mouseButton.y);
 			break;
 		}
 
 		case sf::Event::KeyPressed:
 		{
 			// Delegate keypress event
-			return handle_keypress(event->key.code);
+			return handleKeyPress(event->key.code);
 			break;
 		}
 	}
@@ -232,7 +232,7 @@ int SceneMultiplayer::handle(sf::Event* xevent)
 	return 2; // Multiplayer Prompt Scene is 2
 }
 
-int SceneMultiplayer::handle_mouse_click(int click_x, int click_y)
+int SceneMultiplayer::handleMouseClick(int click_x, int click_y)
 {
 	// X button to go back to menu
 	if (x_button.getGlobalBounds().contains(click_x, click_y))
@@ -250,7 +250,7 @@ int SceneMultiplayer::handle_mouse_click(int click_x, int click_y)
 	return 2;
 }
 
-int SceneMultiplayer::handle_keypress(int key)
+int SceneMultiplayer::handleKeyPress(int key)
 {
 	if (key == sf::Keyboard::Escape)
 	{

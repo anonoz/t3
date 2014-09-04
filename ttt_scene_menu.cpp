@@ -111,14 +111,14 @@ int SceneMenu::handle(sf::Event* xevent)
 	{
 		case sf::Event::MouseButtonReleased:
 		{
-			new_scene = handle_mouse_click(event->mouseButton.x, event->mouseButton.y);
+			new_scene = handleMouseClick(event->mouseButton.x, event->mouseButton.y);
 			std::cout << "Mouse pressed detected at " << event->mouseButton.x << ", " << event->mouseButton.y << std::endl;
 			break;
 		}
 
 		case sf::Event::KeyPressed:
 		{
-			new_scene = handle_keypress(event->key.code);
+			new_scene = handleKeyPress(event->key.code);
 			break;
 		}
 	}
@@ -126,7 +126,7 @@ int SceneMenu::handle(sf::Event* xevent)
 	return new_scene;
 }
 
-int SceneMenu::handle_mouse_click(int click_x, int click_y)
+int SceneMenu::handleMouseClick(int click_x, int click_y)
 {
 	// Start button check
 	if (single_button.getGlobalBounds().contains(click_x, click_y))
@@ -149,7 +149,7 @@ int SceneMenu::handle_mouse_click(int click_x, int click_y)
 	return 0;
 }
 
-int SceneMenu::handle_keypress(int keycode)
+int SceneMenu::handleKeyPress(int keycode)
 {
 	if (keycode == sf::Keyboard::S || keycode == sf::Keyboard::Num1)
 		return 1;

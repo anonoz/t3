@@ -120,7 +120,7 @@ void SceneBattlefield::render()
 	}
 
 	// MP: waiting for opponent
-	if (instance->isMultiplayer() && !instance->isItMyTurn())
+	if (instance->isMultiplayer() && instance->getWinner() == ' ' && !instance->isItMyTurn())
 		window->draw(waiting_for_opponent);
 
 	// Draw cursors

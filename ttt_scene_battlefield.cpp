@@ -189,6 +189,5 @@ SceneBattlefield::SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Fo
 void SceneBattlefield::reset()
 {
 	// Instance = game model. The truth. The source...
-	instance->quitMultiplayer();
 	instance->reset();
 }

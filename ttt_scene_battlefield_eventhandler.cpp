@@ -99,10 +99,16 @@ int SceneBattlefield::handle_mouse_click()
 		// Handle play again button
 		if (playagain_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window))))
 		{
-			reset();
+			if (instance->isMultiplayer())
+			{
+				instance->quitGame();
+				return 2;
+			}
+			else
+			{
+				instance->reset();
+			}
 
-			if (!instance->isMultiplayer())
-				return 0;
 		}
 	}
 	else
@@ -142,7 +148,7 @@ int SceneBattlefield::handle_mouse_click()
 		}
 
 		// Restart n Quit buttons
-		if (restart_button.getGlobalBounds().contains(mouse_position))
+		if (!instance->isMultiplayer() && restart_button.getGlobalBounds().contains(mouse_position))
 		{
 			instance->reset();
 		}
@@ -162,11 +168,15 @@ int SceneBattlefield::handle_keypress(int keycode)
 	// ESC key to go back to menu
 	if (keycode == sf::Keyboard::Escape)
 	{
-		// Multiplayer cannot quit
 		if (instance->isMultiplayer())
-			return 1;
-
-		return 0;
+		{
+			instance->quitGame();
+			return 2;
+		}
+		else
+		{
+			instance->reset();
+		}
 	}
 
 	// Numeric to choose grid

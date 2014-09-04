@@ -56,6 +56,7 @@ void TTT_Instance::reset()
 	current_board_id = rand() % 8;
 
 	current_player = 'X';
+	return;
 }
 
 void TTT_Instance::quitGame()

@@ -24,16 +24,16 @@ int main()
 	window->setFramerateLimit(60);
 	window->setKeyRepeatEnabled(false);
 
-	// Game instance (model in MVC)
+	// Game instance (model)
 	TTT_Instance* instance = new TTT_Instance;
 
-	// Initiate scene director (graphics dpt)
+	// Initiate scene director (controller and each scenes are the views)
 	SceneDirector director(window, instance);
 
 	// Here goes the actual loop
 	while (window->isOpen())
 	{
-		// The obligatory event handler
+
 		sf::Event* event = new sf::Event();
 		while (window->pollEvent(*event))
 		{
@@ -55,20 +55,16 @@ int main()
 		// Wipe it as clear as how Mr Yoong does it
 		window->clear(sf::Color::White);
 
-		// Let director render
+		// Let director delegate scenes rendering job
 		director.render();
 
-		// Finalise loop
 		window->display();
 
 		// Clear event memory
 		delete event;
-
-		// Clear console for status reporting
-		// system("cls");
 	}
 
-	// Anyway if got any port stuff, close them
+	// Anyway if got any sockety stuff, close them
 	instance->stopListeningForClient();
 	instance->stopWaitingForNextMove();
 	instance->stopConnectingToServer();

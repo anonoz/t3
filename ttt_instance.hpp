@@ -6,6 +6,17 @@ Contacts #1 : 0173009142 honsiongchs@gmail.com
 Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
+
+/**
+ * Instance (Model)
+ * ========
+ *
+ * - Store game logics.
+ * - Manage game states.
+ * - In charge of multiplayer components
+ *     (see ttt_instance_multiplayer.cpp)
+ */
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>

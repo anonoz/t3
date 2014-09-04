@@ -7,7 +7,6 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 
-
 #include "ttt_helpers.hpp"
 
 namespace TTTHelpers

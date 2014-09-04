@@ -14,6 +14,8 @@ Tutorial Section: TC201
 #include <sstream>
 #include <cstdlib>
 
+#ifndef TTTHELPERS_HPP
+#define TTTHELPERS_HPP
 
 namespace TTTHelpers
 {
@@ -23,3 +25,5 @@ namespace TTTHelpers
 	void		set_text_string(sf::Text& myText, const std::string& myString);
 	void		set_text_string(sf::Text& myText, const std::string& myString, const std::string& myOriginPositionFlags);
 };
+
+#endif

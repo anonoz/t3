@@ -7,6 +7,15 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 
+/**
+ * Director (Controller)
+ * ========
+ *
+ * - Manage the current scene to show
+ * - Delegate event handling job and rendering job
+ *     to the correct scene object
+ */
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>

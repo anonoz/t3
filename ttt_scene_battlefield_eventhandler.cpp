@@ -176,7 +176,14 @@ int SceneBattlefield::handleKeyPress(int keycode)
 		else
 		{
 			instance->reset();
+			return 0;
 		}
+	}
+
+	// Play again button can be used by Return/Enter
+	if (instance->getWinner() != ' ' && keycode == sf::Keyboard::Return)
+	{
+		instance->reset();
 	}
 
 	// Numeric to choose grid

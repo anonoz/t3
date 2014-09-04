@@ -17,6 +17,7 @@ Tutorial Section: TC201
 #include "ttt_scene_menu.hpp"
 #include "ttt_scene_battlefield.hpp"
 #include "ttt_scene_multiplayer.hpp"
+#include "ttt_scene_help.hpp"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ class SceneDirector
 		SceneMenu*		scene_menu;
 		SceneBattlefield* scene_battlefield;
 		SceneMultiplayer* scene_multiplayer;
+		SceneHelp*		scene_help;
 
 	public:
 		SceneDirector(sf::RenderWindow* xwindow, TTT_Instance* xinstance);

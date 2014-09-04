@@ -7,17 +7,6 @@ Lecture Section : TC101
 Tutorial Section: TC201
 ********************************************/
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-
-// TTT files
-#include "ttt_helpers.hpp"
-#include "ttt_scene_menu.hpp"
-#include "ttt_scene_battlefield.hpp"
-
 #include "ttt_scene_director.hpp"
 
 SceneDirector::SceneDirector(sf::RenderWindow* xwindow, TTT_Instance* xinstance)
@@ -46,12 +35,12 @@ SceneDirector::SceneDirector(sf::RenderWindow* xwindow, TTT_Instance* xinstance)
 
 	// Initiate scenes
 	scene_menu = new SceneMenu(window, &ttt_fonts);
-	std::cout << "Scene menu created in director... "<< std::endl;
 
 	scene_battlefield = new SceneBattlefield(window, &ttt_fonts, instance);
-	std::cout << "Scene battlefield created in director... " << std::endl;
 
 	scene_multiplayer = new SceneMultiplayer(window, &ttt_fonts, instance);
+
+	scene_help = new SceneHelp(window, &ttt_fonts);
 
 	// Set graphics state
 	setCurrentScene(0);
@@ -95,6 +84,9 @@ void SceneDirector::handle(sf::Event* xevent)
 		case 2:
 			setCurrentScene(scene_multiplayer->handle(xevent));
 			break;
+		case 3:
+			setCurrentScene(scene_help->handle(xevent));
+			break;
 	}
 }
 
@@ -110,6 +102,9 @@ void SceneDirector::render()
 			break;
 		case 2:
 			scene_multiplayer->render();
+			break;
+		case 3:
+			scene_help->render();
 			break;
 	}
 }

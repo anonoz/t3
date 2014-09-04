@@ -143,7 +143,7 @@ int SceneMenu::handleMouseClick(int click_x, int click_y)
 	// Help button
 	if (help_button.getGlobalBounds().contains(click_x, click_y))
 	{
-		system("start http://anonoz.github.io/t3");
+		return 3;
 	}
 
 	return 0;
@@ -158,7 +158,7 @@ int SceneMenu::handleKeyPress(int keycode)
 		return 2;
 
 	if (keycode == sf::Keyboard::F1)
-		system("start http://anonoz.github.io/t3");
+		return 3;
 
 	return 0;
 }

@@ -183,7 +183,15 @@ int SceneBattlefield::handleKeyPress(int keycode)
 	// Play again button can be used by Return/Enter
 	if (instance->getWinner() != ' ' && keycode == sf::Keyboard::Return)
 	{
-		instance->reset();
+		if (instance->isMultiplayer())
+		{
+			instance->quitGame();
+			return 2;
+		}
+		else
+		{
+			instance->reset();
+		}
 	}
 
 	// Numeric to choose grid

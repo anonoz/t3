@@ -20,7 +20,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	// - Halo hinting for grids
 	if (event->type == sf::Event::MouseMoved)
 	{
-		handle_mouse_over();
+		handleMouseOver();
 	}
 
 	// Things to watch for mouse click:
@@ -39,7 +39,7 @@ int SceneBattlefield::handle(sf::Event* xevent)
 	return new_scene;
 }
 
-int SceneBattlefield::handle_mouse_over()
+int SceneBattlefield::handleMouseOver()
 {
 	sf::Vector2f mouse_position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
 	

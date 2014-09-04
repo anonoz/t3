@@ -98,7 +98,7 @@ class SceneBattlefield
 		SceneBattlefield(sf::RenderWindow* xwindow, std::vector<sf::Font*>* xttt_fonts, TTT_Instance* xinstance);
 		void render();
 		int handle(sf::Event* xevent);
-		int handle_mouse_over();
+		int handleMouseOver();
 		int handleMouseClick();
 		int handleKeyPress(int);
 		void reset();

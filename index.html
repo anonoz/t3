@@ -1,41 +1,97 @@
+<!DOCTYPE html>
 <html>
 
-<script type="text/javascript">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Tac Tic Toe : Because your usual Tic Tac Toe is too mainstream. MMU Programming Fundamentals Assignment.">
 
-function detectBrowser()
-{
-	/*
-    var fallback = true;
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Tac Tic Toe</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/anonoz/t3">View on GitHub</a>
+
+          <h1 id="project_title">Tac Tic Toe</h1>
+          <h2 id="project_tagline">Because your usual Tic Tac Toe is too mainstream. MMU Programming Fundamentals Assignment.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/anonoz/t3/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/anonoz/t3/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="tac-tic-toe" class="anchor" href="#tac-tic-toe"><span class="octicon octicon-link"></span></a>Tac Tic Toe</h1>
+
+<p><img src="http://i.imgur.com/toCXDMDl.png" alt="T3's Gameplay"></p>
+
+<h2>
+<a name="intro" class="anchor" href="#intro"><span class="octicon octicon-link"></span></a>Intro</h2>
+
+<p>Tac Tic Toe was an assignment from Multimedia University Faculty of Computing and Informatics for the Programming Fundamentals subject.</p>
+
+<h2>
+<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h2>
+
+<p>You may find the ready-to-run executables for Windows on <a href="http://www.github.com/anonoz/t3/releases">Releases Page</a>.</p>
+
+<p>If there is any missing DLLs, try to Google them online and put them in the same folder as the .exe file.</p>
+
+<h2>
+<a name="acknowledgement" class="anchor" href="#acknowledgement"><span class="octicon octicon-link"></span></a>Acknowledgement</h2>
+
+<p>This project won't be possibly done without helps from a few buddies:</p>
+
+<ul>
+<li>
+<a href="http://www.github.com/HiiYL">HiiYL</a> for saving my ass when it comes to SFML</li>
+<li>
+<a href="http://www.github.com/keigen-shu">keigen-shu</a> for saving my ass from C++ quirks</li>
+<li>
+<a href="http://www.github.com/tazeek">tazeek</a> for saving my ass in calculus</li>
+<li>
+<a href="http://www.github.com/asyzruffz">asyzruffz</a> for shocking us with his AI in his version of Tac Tic Toe</li>
+<li>
+<a href="http://www.github.com/bruceoutdoors">bruceoutdoors</a> also taught me a bit bout C++</li>
+</ul><p>Thank you SFML guy and kenney for donating your assets.</p>
+
+<p>Thank you guys! Arigato! 谢谢! Terima Kasih! Merci beaucoup!!</p>
+
+<h2>
+<a name="other-tac-tic-toe-games" class="anchor" href="#other-tac-tic-toe-games"><span class="octicon octicon-link"></span></a>Other Tac Tic Toe games</h2>
+
+<p>Everyone in our batch has to do the game, some has chosen to put them online, you may find them on:</p>
+
+<ul>
+<li><a href="http://www.github.com/HiiYL/uttc">HiiYL's</a></li>
+<li><a href="http://www.github.com/asyzruffz/UlticTacToe">asyzruff's</a></li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>IDGAF, do whatever you want with it.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Tac Tic Toe maintained by <a href="https://github.com/anonoz">anonoz</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
     
-    if (navigator && navigator.vendor) {
-        if (navigator.vendor.search("Apple") != -1) {
-            var vers = parseInt(navigator.appVersion.replace(/^.*?AppleWebKit\/(\d+).*?$/,'$1'),0);
-                if (vers >= 532) {
-                    fallback = false;
-                }
-        }
-    }
-    
-    var slashIndex = window.location.href.lastIndexOf("/");
-    var cropped = window.location.href.slice(0,slashIndex+1);
-    
-    if (fallback) {
-        window.location.replace( cropped + "assets/fallback/index.html" );
-    }
-    else {
-        window.location.replace( cropped + "assets/player/KeynoteDHTMLPlayer.html" );
-    }
-    */
-    var slashIndex = window.location.href.lastIndexOf("/");
-    var cropped = window.location.href.slice(0,slashIndex+1);
-    
-    window.location.replace(cropped + "assets/player/KeynoteDHTMLPlayer.html");
 
-}
-
-</script>
-
-<body bgcolor="black" onload="detectBrowser()">
-</body>
-
+  </body>
 </html>

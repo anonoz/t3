@@ -8,7 +8,7 @@ Tac Tic Toe was an assignment from Multimedia University Faculty of Computing an
 
 ## Download
 
-You may find the ready-to-run executables for Windows on [Releases Page](/anonoz/t3/releases).
+You may find the ready-to-run executables for Windows on [Releases Page](http://www.github.com/anonoz/t3/releases).
 
 If there is any missing DLLs, try to Google them online and put them in the same folder as the .exe file.
 
